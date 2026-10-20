@@ -2,9 +2,17 @@ from contextlib import nullcontext
 from unittest.mock import Mock
 from langchain_core.messages import AIMessage, ToolMessage, HumanMessage
 from assistant.chat import reset_for_database, context_messages
-from assistant.generation import answer_question
+from assistant.generation import answer_question, WorkflowResult
 from assistant.presentation import submit_turn
 from assistant.validation import UnsafeSQL
+
+
+
+def mock_service():
+    service = Mock(dialect='sqlite', description='students')
+    service.preview.side_effect = lambda sql: {'sql': sql, 'tables': ['students']}
+    service.query.return_value = {'sql': 'SELECT COUNT(*) FROM students', 'columns': ['count'], 'rows': [[3]], 'truncated': False}
+    return service
 
 
 def test_reset_and_bounded_context():
@@ -30,8 +38,8 @@ def test_followup_context_and_controlled_execution():
     model = Mock()
     bound = model.bind_tools.return_value
     bound.invoke.side_effect = [tool_reply(), AIMessage(content='Three students.')]
-    service = Mock(dialect='sqlite', description='students')
-    service.query.return_value = {'rows': [[3]]}
+    service = mock_service()
+    service.query.return_value = {'sql': 'SELECT COUNT(*) FROM students', 'columns': ['count'], 'rows': [[3]], 'truncated': False}
     messages = [{'role': 'user', 'content': 'Count students'},
                 {'role': 'assistant', 'content': 'Three'},
                 {'role': 'user', 'content': 'How many scored above 80?'}]
@@ -45,7 +53,7 @@ def test_followup_context_and_controlled_execution():
 def test_invalid_query_is_returned_as_policy_error():
     model = Mock()
     model.bind_tools.return_value.invoke.side_effect = [tool_reply('DELETE FROM students'), AIMessage(content='Cannot modify.')]
-    service = Mock(dialect='sqlite', description='students')
+    service = mock_service()
     service.query.side_effect = UnsafeSQL('internal details')
     answer_question(model, service, [])
     history = model.bind_tools.return_value.invoke.call_args.args[0]
@@ -57,7 +65,7 @@ def test_invalid_query_is_returned_as_policy_error():
 def test_query_budget():
     model = Mock()
     model.bind_tools.return_value.invoke.side_effect = [tool_reply()] * 5
-    service = Mock(dialect='sqlite', description='students')
+    service = mock_service()
     assert 'budget' in answer_question(model, service, [])
     assert service.query.call_count == 4
 
@@ -65,27 +73,27 @@ def test_query_budget():
 def test_unknown_tool_cannot_execute():
     model = Mock()
     model.bind_tools.return_value.invoke.side_effect = [tool_reply(name='sql_db_query'), AIMessage(content='Done')]
-    service = Mock(dialect='sqlite', description='students')
+    service = mock_service()
     answer_question(model, service, [])
     service.query.assert_not_called()
 
 
 def test_turn_stored_and_rendered_once(monkeypatch):
-    monkeypatch.setattr('assistant.presentation.answer_question', lambda *a: 'Answer')
+    monkeypatch.setattr('assistant.presentation.run_workflow', lambda *a, **kw: WorkflowResult(answer='Answer', outcome='answered'))
     st = Mock()
     st.chat_message.side_effect = lambda *a: nullcontext()
     st.spinner.side_effect = lambda *a: nullcontext()
     messages = []
     submit_turn(st, Mock(), Mock(), messages, 'Create a summary')
-    assert messages == [{'role': 'user', 'content': 'Create a summary'},
+    assert [{k: m[k] for k in ('role', 'content')} for m in messages] == [{'role': 'user', 'content': 'Create a summary'},
                         {'role': 'assistant', 'content': 'Answer'}]
     assert [call.args[0] for call in st.write.call_args_list] == ['Create a summary', 'Answer']
 
 
 def test_errors_do_not_leak_secrets(monkeypatch):
-    def fail(*args):
+    def fail(*args, **kwargs):
         raise RuntimeError('password=secret')
-    monkeypatch.setattr('assistant.presentation.answer_question', fail)
+    monkeypatch.setattr('assistant.presentation.run_workflow', fail)
     st = Mock()
     st.chat_message.side_effect = lambda *a: nullcontext()
     st.spinner.side_effect = lambda *a: nullcontext()
@@ -107,14 +115,14 @@ def test_real_sqlite_through_model_tool_boundary(tmp_path):
         service = QueryService(engine)
         model = Mock()
         model.bind_tools.return_value.invoke.side_effect = [
-            tool_reply('DELETE FROM students'),
+            tool_reply('SELECT missing_column FROM students'),
             tool_reply('SELECT COUNT(*) FROM students'),
             AIMessage(content='Two students; no changes made.'),
         ]
         assert answer_question(model, service, []) == 'Two students; no changes made.'
         history = model.bind_tools.return_value.invoke.call_args.args[0]
         results = [m.content for m in history if isinstance(m, ToolMessage)]
-        assert 'rejected' in results[0]
+        assert 'unknown_column' in results[0]
         assert '"rows": [[2]]' in results[1]
         assert service.query('SELECT COUNT(*) FROM students')['rows'] == [[2]]
     finally:

@@ -24,6 +24,12 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 - Buffered LLM responses (displayed after processing)
 - Database schema discovery
 - Interactive chat interface
+- Query inspection, result tables and CSV export
+- Deterministic retail demo with seven related tables
+- Business definitions, clarification and bounded SQL repair
+- Grounded charts and filter-preserving month comparisons
+- Redacted operational traces and actual token usage when available
+- 50-case evaluation dashboard with separate reference and opt-in live modes
 - Response time metrics
 - Separate connection, validation, execution, generation, chat and presentation modules
 
@@ -33,6 +39,7 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 - LangChain
 - Groq
 - SQLAlchemy
+- pandas (result tables, CSV and charts)
 - SQLite
 - MySQL
 - PostgreSQL (psycopg)
@@ -50,6 +57,14 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 | Buffered responses | ✅ |
 | Performance metrics | ✅ |
 | Database information panel | ✅ |
+| SQL/assumptions/validation inspection | ✅ |
+| Results, row count, truncation and CSV | ✅ |
+| Synthetic retail analytics demo | ✅ |
+| Business metric definitions and clarification | ✅ |
+| Bounded SQL recovery | ✅ |
+| Grounded charts and month comparisons | ✅ |
+| Redacted operational traces | ✅ |
+| 50-case evaluation dashboard/CLI | ✅ |
 
 ### Chat Interface
 ![Chat Interface](assets/Chat_Interface.png)
@@ -94,12 +109,20 @@ assistant/runtime.py        Service/model construction and resource cleanup
 assistant/connections.py    URLs, connection timeouts, SQLite read-only mode
 assistant/validation.py     Generated SQL AST policy
 assistant/execution.py      Approved schema and controlled execution
-assistant/generation.py     Bounded model/tool loop
+assistant/generation.py     Workflow stages and bounded SQL recovery
+assistant/business.py       Versioned retail metric/join/date contract
+assistant/demo.py           Reproducible synthetic retail fixture
+assistant/followups.py      Deterministic month comparisons
+assistant/charts.py         Charts from executed values
+assistant/tracing.py        Redacted operational trace allowlist
+assistant/evaluation.py     Reference and live result-based evaluation
+assistant/evaluation_ui.py  Evaluation dashboard
 assistant/chat.py           Bounded history and database-switch reset
 assistant/presentation.py   Single render/store per chat turn
+evaluation/retail_v1.json   50 questions, reference SQL and frozen expected rows
 tests/                      Offline regression and application tests
 sql_queries.sql             PostgreSQL administrator/loader bootstrap
-.github/workflows/tests.yml Offline CI
+.github/workflows/tests.yml Offline, reference evaluation and live database CI
 ```
 
 The UI depends on configuration, chat state, presentation and runtime composition.
@@ -121,16 +144,41 @@ streamlit run app.py
 ## Why this project?
 This application showcases practical GenAI engineering skills including LLM integration, agentic workflows, prompt engineering, SQL safety, multi-database connectivity, bounded context, UI development, and production-oriented guardrails.
 
+## Analytics walkthrough
+
+The default database is a reproducible synthetic retail demo covering
+January–April 2026, with a fixed reporting date of May 1, 2026. It is created
+locally on first use at `data/retail-v1.db`; existing files are never overwritten.
+The legacy five-student database remains selectable in the sidebar. Retail
+business definitions apply only to the retail demo, not arbitrary remote schemas.
+
+1. Select **Retail analytics**, supply your Groq key and a supported tool-calling model.
+2. Ask: **What is April 2026 net revenue in cents for the North region?**
+3. Inspect proposed/validated SQL, tables, assumptions, outcomes, returned rows
+   and truncation. Export result CSV or the redacted trace JSON.
+4. Ask: **Compare that with last month.** For a query using canonical one-month
+   `order_date` bounds, the app executes the same SQL twice with only month bounds
+   changed. This preserves its metric and filters without another model call.
+5. Select **Evaluation** to run all 50 offline reference checks without an API key,
+   or opt into a live model run in small batches. Reference checks are not a model
+   accuracy benchmark. The dashboard labels the mode and batch explicitly.
+
+The workflow is **understand → clarify (when needed) → generate → validate →
+execute → summarize**. Read-only policy rejections stop immediately; recoverable
+SQL errors permit at most two repairs within the four-tool-call/five-round budget.
+Charts use returned numeric columns directly and skip ambiguous/duplicate chart
+axes rather than inventing aggregations. Monetary columns remain in cents.
+Model summaries and assumptions are displayed for inspection, not certified as
+correct; result-based evaluation does not grade answer prose.
+
+See [the analytics design and evaluation guide](docs/analytics.md) for contracts,
+limitations, operational traces and commands.
+
 ## Future Improvements
-- Generated SQL viewer
-- Result table
-- CSV download
-- Row count
-- Query history
-- Authentication
-- Docker
-- Observability
-- Live provider evaluation suite
+- Authentication and per-user database authorization
+- Docker deployment
+- Larger held-out and cross-dialect model evaluation
+- Domain contracts for user-supplied schemas
 
 ## License
 MIT
@@ -147,7 +195,7 @@ Python callers can further restrict tables using `QueryService(tables=[...])`.
 Use database grants to restrict sensitive tables/columns for deployed use.
 
 Defaults: 200 result rows, 20,000-character serialized tool results (large rows
-may be omitted), 5-second query timeout, four query calls and five model rounds.
+may be omitted), 5-second query timeout, four query calls, five model rounds and at most two recoverable SQL repairs.
 Only the most recent eight messages, each capped at 2,000 characters, are sent
 as conversational context. Switching database connection settings/schema or
 clearing history resets the chat. Credentials are not included in model context
@@ -196,3 +244,25 @@ tests skip locally unless `TEST_POSTGRES_ADMIN_URL` and
 fixture tables and reader roles; never point them at a real application database. Live Groq and remote database
 verification require separately supplied services/credentials; offline tests
 must not be described as proof of model accuracy or live remote enforcement.
+
+
+### Evaluation commands
+
+```bash
+# Offline reference-fixture validation: no provider calls or model accuracy claim.
+python -m assistant.evaluation --output evaluation/results/reference.json
+
+# Live mode: set GROQ_API_KEY in your local environment first; never commit it.
+# Uses the selected provider/model and your quota. Start with a small batch.
+python -m assistant.evaluation --live --limit 5 --offset 0 --output evaluation/results/live-batch.json
+```
+
+The 50 curated cases include 30 result questions (joins, aggregations and dates),
+8 ambiguity cases, 6 adversarial inputs and 6 unsupported requests. Expected rows
+are frozen in `evaluation/retail_v1.json` against the versioned synthetic fixture.
+Result comparison checks values, multiplicity, requested ordering and truncation;
+column aliases may differ, numeric comparisons have a small tolerance.
+Live results separately report result correctness, clarification, refusal and
+unsupported-request outcomes. Unavailable token usage remains null; partial usage
+is marked incomplete. CLI failures exit nonzero. GitHub Actions uploads the
+offline reference report; live model evaluation is opt-in and requires credentials.

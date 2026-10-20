@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Reproducible synthetic fixtures and local evaluation artifacts
+data/retail-*.db
+evaluation/results/

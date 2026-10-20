@@ -3,16 +3,21 @@ from contextlib import contextmanager
 
 import langchain_groq
 
-from .config import AppConfig
+from .config import AppConfig, DEFAULT_DATABASE
+from .demo import build_demo, TABLES
 from .connections import open_engine
 from .execution import QueryService
 
 
 @contextmanager
 def application_session(config: AppConfig):
+    demo = config.kind == 'sqlite' and config.settings.get('path') == str(DEFAULT_DATABASE)
+    if demo:
+        build_demo(DEFAULT_DATABASE)
     engine = open_engine(config.kind, **config.settings)
     try:
-        service = QueryService(engine, schema=config.schema)
+        service = QueryService(engine, schema=config.schema, tables=TABLES if demo else None)
+        service.retail = demo
         model = langchain_groq.ChatGroq(
             api_key=config.api_key, model=config.model_name, temperature=0,
             streaming=False, timeout=20, max_retries=0, max_tokens=1500,

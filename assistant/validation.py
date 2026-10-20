@@ -44,7 +44,7 @@ def validate_sql(sql, dialect, allowed_tables, max_rows=200):
                 raise UnsafeSQL('Table is outside the approved schema.')
         if isinstance(node, exp.DataType) and node.this == exp.DataType.Type.USERDEFINED:
             raise UnsafeSQL('Custom data types are not approved.')
-        if isinstance(node, exp.Func):
+        if isinstance(node, exp.Func) and not isinstance(node, (exp.Connector, exp.Case, exp.If)):
             name = node.name.upper() if isinstance(node, exp.Anonymous) else node.sql_name()
             if name not in SAFE_FUNCTIONS:
                 raise UnsafeSQL('Function is not approved.')

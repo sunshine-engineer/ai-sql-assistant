@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 DEFAULT_MODEL = 'qwen/qwen3.6-27b'
-DEFAULT_DATABASE = Path(__file__).resolve().parent.parent / 'student.db'
+DEFAULT_DATABASE = Path(__file__).resolve().parent.parent / 'data' / 'retail-v1.db'
 
 
 @dataclass

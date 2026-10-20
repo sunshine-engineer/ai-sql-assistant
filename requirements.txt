@@ -6,3 +6,4 @@ groq==0.37.1
 sqlalchemy==2.0.51
 mysql-connector-python==9.7.0
 sqlglot==28.10.1
+pandas==3.0.6
