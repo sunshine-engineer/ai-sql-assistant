@@ -1,32 +1,25 @@
-
--- ## Created new user , database and schema 
-CREATE USER genai WITH PASSWORD 'genai';
-CREATE DATABASE genai;
-GRANT ALL PRIVILEGES ON DATABASE genai TO genai;
-
--- Grant full access to the public schema
-GRANT ALL ON SCHEMA public TO genai;
-
--- Ensure the user owns all future tables/sequences created in this schema
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO genai;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO genai;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO genai;
-
-CREATE SCHEMA IF NOT EXISTS genai;
--- 1. Allow the user to access the schema and create new objects in it
-GRANT USAGE, CREATE ON SCHEMA genai TO genai;
-
--- 2. Grant full access to all existing tables and sequences
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA genai TO genai;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA genai TO genai;
-GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA genai TO genai;
-
--- 3. Ensure the user automatically gets full access to FUTURE objects created in this schema
-ALTER DEFAULT PRIVILEGES IN SCHEMA genai GRANT ALL ON TABLES TO genai;
-ALTER DEFAULT PRIVILEGES IN SCHEMA genai GRANT ALL ON SEQUENCES TO genai;
-ALTER DEFAULT PRIVILEGES IN SCHEMA genai GRANT ALL ON FUNCTIONS TO genai;   
-
-GRANT pg_read_server_files TO genai;
+\set ON_ERROR_STOP on
+-- Bootstrap only: run as the database administrator, never as the assistant.
+-- Passwords are supplied interactively through psql, not stored in Git.
+CREATE ROLE genai_loader LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION;
+CREATE ROLE genai_reader LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION;
+\password genai_loader
+\password genai_reader
+CREATE DATABASE genai OWNER genai_loader;
+\connect genai
+REVOKE ALL ON DATABASE genai FROM PUBLIC;
+GRANT CONNECT ON DATABASE genai TO genai_loader, genai_reader;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+CREATE SCHEMA genai AUTHORIZATION genai_loader;
+GRANT USAGE ON SCHEMA genai TO genai_reader;
+ALTER ROLE genai_reader SET default_transaction_read_only = on;
+ALTER ROLE genai_reader SET statement_timeout = '5s';
+ALTER ROLE genai_reader SET search_path = genai;
+-- These grants apply only to objects created by the loader.
+ALTER DEFAULT PRIVILEGES FOR ROLE genai_loader IN SCHEMA genai
+    GRANT SELECT ON TABLES TO genai_reader;
+-- No server-file role, write privileges, function grants, or loader membership.
+SET ROLE genai_loader;
 
 -- ## Loading data from NSE all indices
 
@@ -73,26 +66,10 @@ SELECT id, trade_date, index_name, open_price, high_price, low_price, close_pric
 FROM genai.nse_indices_daily;
 
 -- source >> https://www.bseindia.com/indices/indexarchivedata
-COPY genai.nse_indices_daily
-(
-    trade_date,
-    index_name,
-    open_price,
-    high_price,
-    low_price,
-    close_price,
-    points_change,
-    percent_change,
-    volume_cr,
-    turnover_rs_cr,
-    pe_ratio,
-    pb_ratio,
-    dividend_yield
-)
-FROM '/tmp/dataset/AllIndices_02012026.csv'
-DELIMITER ','
-CSV HEADER;
-
+-- Run psql from the repository root. Client-side loading needs no server-file role.
+\copy genai.nse_indices_daily (trade_date,index_name,open_price,high_price,low_price,close_price,points_change,percent_change,volume_cr,turnover_rs_cr,pe_ratio,pb_ratio,dividend_yield) FROM 'dataset/AllIndices_02012026.csv' CSV HEADER
+GRANT SELECT ON ALL TABLES IN SCHEMA genai TO genai_reader;
+RESET ROLE;
 
 -- Example Queries
 -- Latest NIFTY 50
