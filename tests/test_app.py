@@ -24,3 +24,54 @@ def test_chat_and_database_reset(monkeypatch):
     app.sidebar.radio[0].set_value('postgres').run()
     assert not app.exception
     assert len(app.session_state['messages']) == 1
+
+
+def test_evaluation_dashboard_runs_offline_without_api_key():
+    app = AppTest.from_file('app.py').run()
+    app.sidebar.selectbox[0].set_value('Evaluation').run()
+    assert not app.exception
+    assert len(app.dataframe[0].value) == 50
+    app.button[0].click().run()
+    assert not app.exception
+    report = app.session_state['evaluation_report']
+    assert report['mode'] == 'reference_fixture'
+    assert len(report['cases']) == 50 and all(row['passed'] for row in report['cases'])
+
+
+def test_inspection_and_contextual_comparison_in_streamlit(monkeypatch):
+    sql = "SELECT SUM(net_revenue_cents) AS net_cents FROM sales_facts WHERE order_date >= '2026-04-01' AND order_date < '2026-05-01' AND region='North'"
+    model = Mock(model_name='fixture/provider')
+    model.bind_tools.return_value.invoke.side_effect = [
+        AIMessage(content='', tool_calls=[{'name':'query_database', 'args':{'sql':sql,'assumptions':['Net revenue, USD cents.']},'id':'demo1'}]),
+        AIMessage(content='See the executed net revenue total.'),
+    ]
+    monkeypatch.setattr('langchain_groq.ChatGroq', lambda **kwargs: model)
+    app = AppTest.from_file('app.py').run()
+    app.sidebar.text_input[0].set_value('offline-test-key').run()
+    app.chat_input[0].set_value('Show April 2026 net revenue for North.').run()
+    assert not app.exception
+    assert any('LIMIT 201' in block.value for block in app.code)
+    assert len(app.dataframe[-1].value) == 1
+    app.chat_input[0].set_value('Compare that with last month.').run()
+    assert not app.exception
+    comparison = app.dataframe[-1].value
+    assert comparison['period'].tolist() == ['2026-03','2026-04']
+    assert model.bind_tools.return_value.invoke.call_count == 2
+    assert "region = 'North'" in app.session_state['analysis_context']['sql']
+    app.sidebar.radio[0].set_value('postgres').run()
+    assert app.session_state['analysis_context'] == {}
+
+
+def test_duplicate_result_columns_are_inspectable(monkeypatch):
+    model = Mock(model_name='fixture/provider')
+    model.bind_tools.return_value.invoke.side_effect = [
+        AIMessage(content='', tool_calls=[{'name':'query_database','args':{'sql':'SELECT 1 AS value, 2 AS value'},'id':'duplicate'}]),
+        AIMessage(content='See both values.'),
+    ]
+    monkeypatch.setattr('langchain_groq.ChatGroq', lambda **kwargs: model)
+    app = AppTest.from_file('app.py').run()
+    app.sidebar.text_input[0].set_value('offline-test-key').run()
+    app.chat_input[0].set_value('Show both values.').run()
+    assert not app.exception and not app.error
+    assert app.dataframe[-1].value.columns.tolist() == ['value', 'value (2)']
+    assert app.dataframe[-1].value.values.tolist() == [[1,2]]

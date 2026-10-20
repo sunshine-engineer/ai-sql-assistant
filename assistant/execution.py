@@ -2,6 +2,8 @@
 import json
 import time
 from sqlalchemy import inspect
+import sqlglot
+from sqlglot import exp
 from .validation import validate_sql
 
 
@@ -25,8 +27,14 @@ class QueryService:
             for col in inspector.get_columns(name, schema=schema)
         ] for name in selected})
 
-    def query(self, sql):
+    def preview(self, sql):
         safe = validate_sql(sql, self.dialect, self.allowed, self.max_rows)
+        tree = sqlglot.parse_one(safe, read=self.dialect)
+        tables = sorted({table.sql(dialect=self.dialect) for table in tree.find_all(exp.Table)})
+        return {'sql': safe, 'tables': tables}
+
+    def query(self, sql):
+        safe = self.preview(sql)['sql']
         with self.engine.connect() as connection:
             raw = None
             try:

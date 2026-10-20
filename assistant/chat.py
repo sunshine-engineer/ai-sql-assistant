@@ -10,6 +10,7 @@ def reset_for_database(state, identity, clear=False):
     if clear or state.get('database_identity') != digest:
         state['messages'] = [dict(GREETING)]
         state['database_identity'] = digest
+        state['analysis_context'] = {}
 
 
 def context_messages(messages):

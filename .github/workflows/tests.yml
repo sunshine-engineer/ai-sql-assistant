@@ -5,6 +5,7 @@ permissions:
 jobs:
   offline-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -14,8 +15,14 @@ jobs:
       - run: python -m pip install -r requirements-dev.txt
       - run: python -m pip check
       - run: python -m pytest -q
+      - run: python -m assistant.evaluation --output evaluation/results/reference.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: retail-reference-evaluation
+          path: evaluation/results/reference.json
   remote-databases:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     services:
       postgres:
         image: postgres:16

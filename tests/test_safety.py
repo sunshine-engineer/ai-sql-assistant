@@ -124,3 +124,11 @@ def test_required_driver_loads_without_connecting(kind):
         assert engine.dialect.dbapi is not None
     finally:
         engine.dispose()
+
+
+
+def test_compound_filters_allow_logic_but_still_check_nested_functions(service):
+    assert service.query("SELECT name FROM students WHERE marks > 80 AND name = 'A'")['rows'] == [['A']]
+    assert service.query("SELECT name FROM students WHERE name = 'A' OR name = 'B' ORDER BY name")['rows'] == [['A'],['B']]
+    with pytest.raises(UnsafeSQL):
+        service.query("SELECT name FROM students WHERE marks > 80 OR load_extension('bad') IS NULL")
