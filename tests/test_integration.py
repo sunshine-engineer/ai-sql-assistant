@@ -56,5 +56,6 @@ def test_real_remote_permissions_results_and_timeout(remote):
             db.exec_driver_sql(f'DELETE FROM {table}')
         db.rollback()
     with pytest.raises(DBAPIError):
-        remote.query('SELECT COUNT(*) FROM students a CROSS JOIN students b CROSS JOIN students c CROSS JOIN students d')
+        # A bare COUNT can be optimized without enumerating the Cartesian product.
+        remote.query('SELECT SUM(ABS(a.marks - b.marks + c.marks - d.marks)) FROM students a CROSS JOIN students b CROSS JOIN students c CROSS JOIN students d')
     assert remote.query('SELECT COUNT(*) FROM students')['rows'] == [[1000]]
