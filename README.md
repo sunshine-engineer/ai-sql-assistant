@@ -87,7 +87,10 @@ Streamlit -> bounded conversation -> Groq tool-calling model
 
 ## Project Structure
 ```text
-app.py                      Streamlit UI and session lifecycle
+app.py                      Minimal Streamlit launcher
+assistant/config.py         Application settings and shared defaults
+assistant/ui.py             Sidebar, session reset and UI composition
+assistant/runtime.py        Service/model construction and resource cleanup
 assistant/connections.py    URLs, connection timeouts, SQLite read-only mode
 assistant/validation.py     Generated SQL AST policy
 assistant/execution.py      Approved schema and controlled execution
@@ -98,6 +101,12 @@ tests/                      Offline regression and application tests
 sql_queries.sql             PostgreSQL administrator/loader bootstrap
 .github/workflows/tests.yml Offline CI
 ```
+
+The UI depends on configuration, chat state, presentation and runtime composition.
+Runtime constructs the model and database service; it always disposes the engine,
+including when initialization or request handling fails. SQL validation and
+execution remain independent of Streamlit, so other interfaces can reuse them.
+Importing the launcher does not render the UI or connect to a database.
 
 ## Installation
 ```bash

@@ -59,3 +59,18 @@ execution. These are mocks, not proof that a remote server enforces those settin
 The policy deliberately rejects CTEs, set operations, comments, custom types,
 locking clauses, session variables and unapproved functions. Database SELECT-only
 permissions remain required; parser validation is defense in depth.
+
+## Modular structure follow-up
+
+The entry point is now a five-line launcher. `assistant/config.py` defines
+application settings/defaults, `assistant/ui.py` composes the Streamlit interface,
+and `assistant/runtime.py` owns database/model initialization and engine cleanup.
+The existing SQL safety, generation, chat and presentation modules are retained.
+
+Local validation after this refactor: **63 passed, 2 skipped** on Python 3.14;
+`pip check`, Python compilation and `git diff --check` passed. New tests verify
+resource disposal after success, schema/model initialization errors and request
+failures, and verify that configuration representations hide credentials.
+Existing Streamlit and SQL safety regressions pass without behavior changes.
+The two skips remain live PostgreSQL/MySQL tests; consult PR checks for CI results
+against disposable database services on the latest commit.
