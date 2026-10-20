@@ -1,0 +1,13 @@
+*
+!requirements.txt
+!assistant/
+!assistant/**
+!evaluation/
+!evaluation/retail_v1.json
+!evaluation/heldout_v1.json
+!app.py
+!student.db
+**/__pycache__
+**/*.pyc
+!evaluation/reports/
+!evaluation/reports/*.json

@@ -618,7 +618,7 @@
       "category": "joins",
       "question": "Show refund cents by product category without multiplying refund events.",
       "expected_outcome": "answered",
-      "gold_sql": "SELECT p.category,SUM(r.amount_cents) AS refund_cents FROM refunds r JOIN order_items i ON r.item_id=i.item_id JOIN products p ON i.product_id=p.product_id GROUP BY p.category ORDER BY p.category",
+      "gold_sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts WHERE refund_cents > 0 GROUP BY category ORDER BY category",
       "columns": [
         "category",
         "refund_cents"
