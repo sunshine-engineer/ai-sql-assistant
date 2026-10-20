@@ -9,7 +9,7 @@ class UnsafeSQL(ValueError):
 
 SAFE_FUNCTIONS = frozenset({
     'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'ABS', 'ROUND', 'COALESCE',
-    'LOWER', 'UPPER', 'LENGTH', 'CAST', 'EXTRACT', 'DATE', 'DATE_TRUNC',
+    'EXISTS', 'LOWER', 'UPPER', 'LENGTH', 'CAST', 'EXTRACT', 'DATE', 'DATE_TRUNC',
     'TIMESTAMP_TRUNC', 'SUBSTRING', 'TRIM', 'NULLIF', 'GREATEST', 'LEAST',
 })
 

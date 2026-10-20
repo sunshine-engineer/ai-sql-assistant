@@ -51,8 +51,11 @@ and execution boundaries. Read-only policy rejections are terminal. Recoverable
 identifier/syntax errors allow at most two repairs; timeouts and connection
 errors stop. Maximums remain four tool calls and five model rounds. A final
 numerical answer needs successful query evidence; otherwise the workflow asks
-for clarification. This does not prove that the model's prose faithfully
-summarizes those rows; prose grading is outside the current evaluator.
+for clarification. Final output must contain structured facts with `result_id`,
+zero-based `row` and `column`, and `value`. References must point to the last
+successful result and match its cells. The app renders cited source values.
+Invalid answers receive a deterministic fallback; raw model prose is not shown.
+Cell verification does not prove business semantics or answer completeness.
 
 Charts select an unambiguous dimension and numeric measure from actual returned
 rows. Duplicate axis labels or ambiguous shapes skip charting. No LLM-generated
@@ -70,7 +73,11 @@ no model call reinterprets them. Previous model assumptions are not a proof of
 SQL correctness; the SQL expression itself is preserved.
 
 The deterministic path requires one half-open ISO calendar month in a top-level
-AND-only WHERE clause with no subqueries. Unsupported shapes ask clarification.
+AND-only WHERE clause with no subqueries, negation or OR. Both positive bounds
+must directly reference the same date column, with no extra date conditions.
+Unsupported shapes ask clarification. Extra instructions such as “use South
+instead of North” also ask clarification before execution; restate the changed
+analysis first.
 A comparison outside the retail fixture's date coverage is explicitly unsupported.
 Top-N membership can differ between months. Other follow-ups use bounded model
 context and do not have the same deterministic preservation guarantee.
@@ -92,14 +99,18 @@ Two modes have distinct meanings:
   quality. It makes no provider call and needs no API key.
 - **Live model**: ask the workflow each question, execute its generated SQL, and
   compare the final executed result to the frozen rows. Report query result
-  correctness, clarification, refusal and unsupported outcomes separately.
+  correctness and model-answer faithfulness separately, alongside clarification,
+  refusal and unsupported outcomes. Answered cases must pass both SQL-result and
+  structured-answer checks. A safe fallback does not rescue the model score.
   Preflight controls can resolve some cases without a model call, so outcome
   scores measure the application, not exclusively the LLM.
 
 Results compare width, row multiplicity, values and requested ordering; aliases
 may vary. Numeric tolerance is `rel_tol=1e-7, abs_tol=1e-6`. Truncated/error results
 fail rather than being compared as complete. A correct-looking prose answer
-cannot hide a wrong executed result. Prose accuracy, latency under concurrent
+cannot hide a wrong executed result. A false numerical answer fails even with
+correct SQL results. Offline answer scores are marked not evaluated.
+Unrestricted prose accuracy, latency under concurrent
 load, remote SQL dialect quality and prompt-injection generalization are not
 measured. Keep separate held-out cases for any future performance claims.
 

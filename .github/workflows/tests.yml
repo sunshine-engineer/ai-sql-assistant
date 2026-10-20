@@ -16,10 +16,11 @@ jobs:
       - run: python -m pip check
       - run: python -m pytest -q
       - run: python -m assistant.evaluation --output evaluation/results/reference.json
+      - run: python -m assistant.instance_checks --output evaluation/results/instance-checks.json
       - uses: actions/upload-artifact@v4
         with:
           name: retail-reference-evaluation
-          path: evaluation/results/reference.json
+          path: evaluation/results/*.json
   remote-databases:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -56,3 +57,13 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements-dev.txt
       - run: python -m pytest -q tests/test_integration.py
+
+  reviewer-container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose up --build --detach --wait --wait-timeout 120
+      - run: curl --fail http://127.0.0.1:8501/_stcore/health
+      - if: always()
+        run: docker compose down

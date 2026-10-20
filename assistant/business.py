@@ -1,6 +1,7 @@
 """Versioned retail semantics and deterministic clarification/refusal checks."""
 import re
 from .demo import AS_OF_DATE, DEMO_VERSION
+from .dates import requested_dates
 
 CONTRACT = {
     'version': DEMO_VERSION,
@@ -21,7 +22,7 @@ CONTRACT = {
         'orders.customer_id = customers.customer_id (many-to-one)',
         'order_items.order_id = orders.order_id (many-to-one)',
         'order_items.product_id = products.product_id (many-to-one)',
-        'refunds.item_id = order_items.item_id (many-to-one; aggregate refunds per item before combining sales)',
+        'Use item-grain sales_facts for joined refund analysis; raw refunds joins are blocked',
         'aggregate sales_facts by month/category, then join targets on BOTH month AND category',
     ],
     'dates': 'ISO dates, UTC calendar months, half-open order_date >= month-start AND order_date < next-month-start. Last month means April 2026 in this fixed fixture.',
@@ -38,9 +39,8 @@ def preflight(question, retail=True):
         return 'refused', 'This assistant only reads approved tables. Database writes, server-file access and guardrail bypasses are refused.'
     if not retail:
         return None
-    years = re.findall(r'\b(20\d{2})\b', q)
-    outside_month = re.search(r'\b(may|june|july|august|september|october|november|december)\b|2026-(0[5-9]|1[0-2])', q)
-    if any(year != '2026' for year in years) or outside_month or re.search(r'forecast|predict|profit|margin|email|phone number|password|external api|internet', q):
+    years, months = requested_dates(question)
+    if any(year != 2026 for year in years) or any(month not in range(1, 5) for month in months) or re.search(r'forecast|predict|profit|margin|email|phone number|password|external api|internet', q):
         return 'unsupported', 'The retail fixture cannot answer that request: it has no costs, forecasts, PII or external data, and covers January–April 2026.'
     if re.search(r'\brevenue\b', q) and not re.search(r'\bnet\b|\bgross\b', q):
         return 'clarify', 'Do you mean gross sales or net revenue after refunds? Please specify a month or date range.'
