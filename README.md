@@ -184,7 +184,8 @@ See [the engineering guide](docs/engineering.md) for canonical analysis plans,
 three-instance SQL evaluation, repeated paired live benchmarks, budgets, metadata
 selection, sanitized operational aggregates, and hosted access configuration.
 [Measured benchmark results](docs/benchmark-report.md) include failures and quota
-limitations. [Current screenshots and walkthrough](assets/current/README.md) show
+limitations. [Reliability fixes and pending live checks](docs/benchmark-reliability-status.md)
+record the current follow-up. [Current screenshots and walkthrough](assets/current/README.md) show
 real controlled execution without a provider key. [Validation scope](docs/engineering-validation.md)
 distinguishes local tests, live measurements and infrastructure still unverified. Run `docker compose up --build` for the synthetic-only reviewer package.
 

@@ -27,6 +27,8 @@ def render_report(st, report, key):
                 st.write('Assumptions (model supplied unless noted):', attempt.get('assumptions', []))
                 if attempt.get('error'):
                     st.error(attempt['error'])
+                if attempt.get('intent_fields'):
+                    st.write('Plan fields that contradicted explicit intent:',attempt['intent_fields'])
             results = [attempt['result'] for attempt in attempts if attempt.get('result')]
             if results:
                 result = report.get('comparison') or results[-1]

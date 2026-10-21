@@ -10,6 +10,8 @@ from .business import CONTRACT, preflight
 from .budgets import RequestBudget, BudgetExceeded, provider_error
 from .plans import AnalysisPlan, PLAN_TOOL
 from .access import provider_question
+from .plan_intent import validate_plan_intent, PlanIntentError, requires_refund_plan
+from .scheduling import prepare_call
 from .answers import assess_answer, deterministic_answer
 from .chat import context_messages
 from .followups import is_month_comparison, can_reuse_comparison, comparison_queries
@@ -93,6 +95,13 @@ def run_workflow(model, service, messages, context=None, budget=None, allow_plan
             trace.stage('validate')
             inspection = service.preview(sql)
             attempt.update(validation='passed', tables=inspection['tables'], sql=inspection['sql'])
+            if plan is None and allow_plans and getattr(service,'retail',False) is True and requires_refund_plan(question):
+                attempt.update(validation='semantic_rejected', error='canonical_plan_required')
+                result = {'error':'canonical_plan_required: use execute_analysis_plan with refund_rate; do not filter completed status again.'}
+                category, recoverable = 'canonical_plan_required', True
+                trace.calls.append({'tool':'query_database','outcome':'rejected','validation':'semantic_rejected',
+                                    'error_category':category,'duration_ms':round((perf_counter()-started)*1000,2)})
+                return result,category,recoverable
             trace.stage('execute')
             remaining_ms = max(1, int(budget.remaining_seconds() * 1000))
             result = {**service.query(sql, timeout_ms=remaining_ms), 'result_id': result_id}  # Revalidated at execution.
@@ -197,6 +206,8 @@ def run_workflow(model, service, messages, context=None, budget=None, allow_plan
         history[0].content += (' Prefer execute_analysis_plan for supported metrics. Plans use canonical item-grain sales_facts, '
                                'customer counts use customers. Use item grain for sales/units/refunds/rate, order for orders, '
                                'customer for customers. Date range is [inclusive start, exclusive end] or null. '
+                               'A filter such as for South is not a region grouping. Add dimensions only for by/per grouping requests. '
+                               'For net_revenue_growth_ratio, date_range is the CURRENT month; compare its previous month and round to 4 decimals. '
                                'Flexible SQL remains available outside this subset; raw refund joins are forbidden.')
     try:
         bound = model.bind_tools(tools)
@@ -208,7 +219,7 @@ def run_workflow(model, service, messages, context=None, budget=None, allow_plan
         model_started = perf_counter()
         admitted = False
         try:
-            kwargs, reserved = budget.admit(history, tools)
+            kwargs, reserved = prepare_call(bound, budget, history, tools)
             admitted = True
             reply = bound.invoke(history, **kwargs)
             trace.usage(reply)
@@ -238,8 +249,17 @@ def run_workflow(model, service, messages, context=None, budget=None, allow_plan
             if call['name'] == 'execute_analysis_plan' and len(tools) > 1:
                 try:
                     plan = AnalysisPlan.parse(call.get('args'))
+                    validate_plan_intent(plan, question)
                     result, category, recoverable = execute(plan.compile(service.dialect),
                         ['Canonical retail metric and approved grain; filters came from the proposed plan.'], asdict(plan))
+                except PlanIntentError as exc:
+                    report.attempts.append({'result_id':f'q{len(report.attempts)+1}', 'plan':asdict(plan),
+                        'validation':'semantic_rejected','execution':'not_run','tables':[],
+                        'error':'plan_intent_mismatch','intent_fields':sorted(exc.expected)})
+                    result = {'error':'plan_intent_mismatch','expected':exc.expected}
+                    category, recoverable = 'plan_intent_mismatch', True
+                    trace.calls.append({'tool':'execute_analysis_plan','outcome':'rejected','error_category':category,
+                                        'intent_fields':sorted(exc.expected),'duration_ms':0})
                 except (ValueError, TypeError):
                     result, category, recoverable = {'error': 'invalid_analysis_plan: revise metric, dimensions, filters, date range and grain.'}, None, False
                     trace.calls.append({'tool': 'execute_analysis_plan', 'outcome': 'rejected', 'error_category': 'invalid_plan', 'duration_ms': 0})
@@ -261,6 +281,13 @@ def run_workflow(model, service, messages, context=None, budget=None, allow_plan
                 if not recoverable or trace.retries >= MAX_REPAIRS:
                     return finish('Query failed (' + category + '). Please revise the question or connection settings.', 'failed')
                 trace.retries += 1
+            elif (len(reply.tool_calls) == 1 and call['name'] == 'execute_analysis_plan' and
+                  not result.get('error')):
+                trace.stage('summarize')
+                assessment = deterministic_answer(result)
+                report.facts, report.answer_validation = assessment.facts, assessment.summary()
+                report.answer_validation['method'] = 'canonical_plan'
+                return finish(assessment.answer, 'answered')
     return finish('Query budget reached. Please narrow your question.', 'budget_exhausted')
 
 

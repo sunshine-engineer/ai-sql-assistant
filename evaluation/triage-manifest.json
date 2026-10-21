@@ -1,0 +1,13 @@
+{
+  "scope": "Original triage snapshot: retail-questions-v2/reserved-questions-v2; precedes R13 output-contract clarification to v3. Raw SQL diagnostics contain benchmark-owned synthetic fixtures only. Historical reports are unchanged. Targeted v3 run uses retail-questions-v3/reserved-questions-v2 and includes the provider-failure stop condition. Stability v3 run covers H05/H04/H07/R30 with the same source snapshot as targeted v3. R30 policy-parity uses a later source snapshot and separately versioned baseline instructions; earlier runs are unchanged.",
+  "files": {
+    "evaluation/reports/2026-10-20-triage.json": "ebc81257cb3fe2103d85195aed675b6f3dd308ba11b8542242419478ee130a3f",
+    "evaluation/diagnostics/2026-10-20-triage-synthetic.json": "ef8d5a5f772b42e8dbc4487318e695f0d2e213b7b03d19b8fcf76978b1d589b9",
+    "evaluation/reports/2026-10-21-targeted-v3.json": "d3b2afb348228ee85ea5f9d4f707e846b48b50213d3af111511c79f8a0cb3606",
+    "evaluation/diagnostics/2026-10-21-targeted-v3-synthetic.json": "2d30d9b8bb72692b1acd2cd90c3f85047b8e1a7d6ec31b3b2fedb5f6f4e880c1",
+    "evaluation/reports/2026-10-21-stability-v3.json": "9201f0817c77964f78bb4d21ed81e1b699c807028345f38c21ab4b1c1904b1c6",
+    "evaluation/diagnostics/2026-10-21-stability-v3-synthetic.json": "4b42a55078bc1ce523b98479ce39d58d569d78d59811c42486b31877874375b5",
+    "evaluation/reports/2026-10-21-r30-policy-parity.json": "f7693fda28c0b7557ab8b0ce2ce57c9193b79659e560e913f69f0d139371712a",
+    "evaluation/diagnostics/2026-10-21-r30-policy-parity-synthetic.json": "808b06df5f04667a7e0f14c78a4f8e02156d6017b52eb4c38e0c26b574f1f34f"
+  }
+}
