@@ -66,7 +66,7 @@ class SyntheticDiagnostics:
 
     def validate_cases(self, cases):
         from .benchmark import suites
-        known = {c['id']:c for group in suites().values() for c in group}
+        known = {c['id']:c for group in suites(include_prospective=True).values() for c in group}
         for case in cases:
             source = known.get(case.get('id'))
             if not source or any(case.get(k)!=source.get(k) for k in ('question','gold_sql','expected_outcome')):

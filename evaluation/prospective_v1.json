@@ -1,0 +1,499 @@
+{
+  "version": "prospective-retail-v1",
+  "authorship": "Authored by the same implementation agent after the targeted fixes; not independently authored or external. User approved this authorship limitation.",
+  "protocol": "Freeze questions, gold SQL and expected instance results before provider calls. Never pass gold SQL or expected rows to either model. Do not tune implementation against results while continuing to call v1 held out.",
+  "cases": [
+    {
+      "id": "P01",
+      "category": "distinct_grain",
+      "question": "During February 2026, how many completed orders contained a Software product? Count each order once.",
+      "expected_outcome": "answered",
+      "gold_sql": "SELECT COUNT(DISTINCT order_id) AS orders FROM sales_facts WHERE status='completed' AND category='Software' AND order_date >= '2026-02-01' AND order_date < '2026-03-01'",
+      "ordered": false,
+      "expected_by_instance": {
+        "base": {
+          "columns": [
+            "orders"
+          ],
+          "rows": [
+            [
+              16
+            ]
+          ]
+        },
+        "skewed": {
+          "columns": [
+            "orders"
+          ],
+          "rows": [
+            [
+              13
+            ]
+          ]
+        },
+        "zero_sales": {
+          "columns": [
+            "orders"
+          ],
+          "rows": [
+            [
+              16
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "P02",
+      "category": "missing_relationship",
+      "question": "For April 2026, list each product name alongside the number of distinct customers who bought it on a completed order. Include products with no matching purchases and sort by product name.",
+      "expected_outcome": "answered",
+      "gold_sql": "SELECT p.product_name, COUNT(DISTINCT o.customer_id) AS customers FROM products p LEFT JOIN order_items i ON p.product_id=i.product_id LEFT JOIN orders o ON i.order_id=o.order_id AND o.status='completed' AND o.order_date >= '2026-04-01' AND o.order_date < '2026-05-01' GROUP BY p.product_id,p.product_name ORDER BY p.product_name",
+      "ordered": true,
+      "expected_by_instance": {
+        "base": {
+          "columns": [
+            "product_name",
+            "customers"
+          ],
+          "rows": [
+            [
+              "Backup license",
+              8
+            ],
+            [
+              "Cable",
+              7
+            ],
+            [
+              "Editor license",
+              8
+            ],
+            [
+              "Keyboard",
+              7
+            ],
+            [
+              "Monitor",
+              8
+            ],
+            [
+              "Stand",
+              7
+            ],
+            [
+              "Unused adapter",
+              0
+            ]
+          ]
+        },
+        "skewed": {
+          "columns": [
+            "product_name",
+            "customers"
+          ],
+          "rows": [
+            [
+              "Backup license",
+              7
+            ],
+            [
+              "Cable",
+              7
+            ],
+            [
+              "Editor license",
+              6
+            ],
+            [
+              "Keyboard",
+              7
+            ],
+            [
+              "Monitor",
+              8
+            ],
+            [
+              "Stand",
+              7
+            ],
+            [
+              "Unused adapter",
+              0
+            ]
+          ]
+        },
+        "zero_sales": {
+          "columns": [
+            "product_name",
+            "customers"
+          ],
+          "rows": [
+            [
+              "Backup license",
+              8
+            ],
+            [
+              "Cable",
+              7
+            ],
+            [
+              "Editor license",
+              8
+            ],
+            [
+              "Keyboard",
+              7
+            ],
+            [
+              "Monitor",
+              8
+            ],
+            [
+              "Stand",
+              7
+            ],
+            [
+              "Unused adapter",
+              0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "P03",
+      "category": "null_filter",
+      "question": "For January 2026, what were gross sales in cents for Accessories orders with an unknown customer region? Use null if there are no matching items.",
+      "expected_outcome": "answered",
+      "gold_sql": "SELECT SUM(gross_sales_cents) AS gross_sales_cents FROM sales_facts WHERE category='Accessories' AND region IS NULL AND order_date >= '2026-01-01' AND order_date < '2026-02-01'",
+      "ordered": false,
+      "expected_by_instance": {
+        "base": {
+          "columns": [
+            "gross_sales_cents"
+          ],
+          "rows": [
+            [
+              6000
+            ]
+          ]
+        },
+        "skewed": {
+          "columns": [
+            "gross_sales_cents"
+          ],
+          "rows": [
+            [
+              34000
+            ]
+          ]
+        },
+        "zero_sales": {
+          "columns": [
+            "gross_sales_cents"
+          ],
+          "rows": [
+            [
+              0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "P04",
+      "category": "monthly_distinct",
+      "question": "For each month from January through April 2026, return the number of distinct customers with completed orders. Return month and customer count, ordered by month.",
+      "expected_outcome": "answered",
+      "gold_sql": "SELECT month, COUNT(DISTINCT CASE WHEN status='completed' THEN customer_id END) AS customers FROM sales_facts WHERE order_date >= '2026-01-01' AND order_date < '2026-05-01' GROUP BY month ORDER BY month",
+      "ordered": true,
+      "expected_by_instance": {
+        "base": {
+          "columns": [
+            "month",
+            "customers"
+          ],
+          "rows": [
+            [
+              "2026-01",
+              11
+            ],
+            [
+              "2026-02",
+              11
+            ],
+            [
+              "2026-03",
+              11
+            ],
+            [
+              "2026-04",
+              11
+            ]
+          ]
+        },
+        "skewed": {
+          "columns": [
+            "month",
+            "customers"
+          ],
+          "rows": [
+            [
+              "2026-01",
+              11
+            ],
+            [
+              "2026-02",
+              11
+            ],
+            [
+              "2026-03",
+              11
+            ],
+            [
+              "2026-04",
+              11
+            ]
+          ]
+        },
+        "zero_sales": {
+          "columns": [
+            "month",
+            "customers"
+          ],
+          "rows": [
+            [
+              "2026-01",
+              11
+            ],
+            [
+              "2026-02",
+              11
+            ],
+            [
+              "2026-03",
+              11
+            ],
+            [
+              "2026-04",
+              11
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "P05",
+      "category": "having",
+      "question": "List customer IDs with at least two completed orders in February 2026. Return only customer_id, ascending.",
+      "expected_outcome": "answered",
+      "gold_sql": "SELECT customer_id FROM orders WHERE status='completed' AND order_date >= '2026-02-01' AND order_date < '2026-03-01' GROUP BY customer_id HAVING COUNT(*) >= 2 ORDER BY customer_id",
+      "ordered": true,
+      "expected_by_instance": {
+        "base": {
+          "columns": [
+            "customer_id"
+          ],
+          "rows": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ],
+            [
+              4
+            ],
+            [
+              5
+            ],
+            [
+              6
+            ],
+            [
+              7
+            ],
+            [
+              8
+            ],
+            [
+              9
+            ],
+            [
+              10
+            ],
+            [
+              11
+            ]
+          ]
+        },
+        "skewed": {
+          "columns": [
+            "customer_id"
+          ],
+          "rows": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ],
+            [
+              4
+            ],
+            [
+              5
+            ],
+            [
+              6
+            ],
+            [
+              7
+            ],
+            [
+              8
+            ],
+            [
+              9
+            ],
+            [
+              10
+            ],
+            [
+              11
+            ]
+          ]
+        },
+        "zero_sales": {
+          "columns": [
+            "customer_id"
+          ],
+          "rows": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ],
+            [
+              4
+            ],
+            [
+              5
+            ],
+            [
+              6
+            ],
+            [
+              7
+            ],
+            [
+              8
+            ],
+            [
+              9
+            ],
+            [
+              10
+            ],
+            [
+              11
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "P06",
+      "category": "ratio_date_group",
+      "question": "For each category, what fraction of April 2026 gross sales was refunded? Include categories represented in April even when refunds are zero; return null for zero gross sales and sort by category.",
+      "expected_outcome": "answered",
+      "gold_sql": "SELECT category, SUM(refund_cents)*1.0/NULLIF(SUM(gross_sales_cents),0) AS refund_rate FROM sales_facts WHERE order_date >= '2026-04-01' AND order_date < '2026-05-01' GROUP BY category ORDER BY category",
+      "ordered": true,
+      "expected_by_instance": {
+        "base": {
+          "columns": [
+            "category",
+            "refund_rate"
+          ],
+          "rows": [
+            [
+              "Accessories",
+              0.09838107098381071
+            ],
+            [
+              "Hardware",
+              0.0
+            ],
+            [
+              "Software",
+              0.04281524926686217
+            ]
+          ]
+        },
+        "skewed": {
+          "columns": [
+            "category",
+            "refund_rate"
+          ],
+          "rows": [
+            [
+              "Accessories",
+              0.05490268767377201
+            ],
+            [
+              "Hardware",
+              0.0
+            ],
+            [
+              "Software",
+              0.03033056325023084
+            ]
+          ]
+        },
+        "zero_sales": {
+          "columns": [
+            "category",
+            "refund_rate"
+          ],
+          "rows": [
+            [
+              "Accessories",
+              null
+            ],
+            [
+              "Hardware",
+              null
+            ],
+            [
+              "Software",
+              null
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "P07",
+      "category": "ambiguity",
+      "question": "Can you show revenue for February 2026?",
+      "expected_outcome": "clarify"
+    },
+    {
+      "id": "P08",
+      "category": "unsupported",
+      "question": "What was the profit in cents for Hardware in March 2026?",
+      "expected_outcome": "unsupported"
+    }
+  ]
+}

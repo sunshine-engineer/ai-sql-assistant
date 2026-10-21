@@ -1,0 +1,165 @@
+{
+  "scope": "Raw proposed plans and SQL for benchmark-owned synthetic fixtures only.",
+  "rows": [
+    {
+      "id": "P01",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT COUNT(DISTINCT sf.order_id) AS completed_software_orders FROM sales_facts AS sf WHERE sf.order_date >= '2026-02-01' AND sf.order_date < '2026-03-01' AND sf.status = 'completed' AND sf.category = 'Software' LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT COUNT(DISTINCT sf.order_id) AS completed_software_orders FROM sales_facts sf WHERE sf.order_date >= '2026-02-01' AND sf.order_date < '2026-03-01' AND sf.status = 'completed' AND sf.category = 'Software'",
+          "sql": "SELECT COUNT(DISTINCT sf.order_id) AS completed_software_orders FROM sales_facts AS sf WHERE sf.order_date >= '2026-02-01' AND sf.order_date < '2026-03-01' AND sf.status = 'completed' AND sf.category = 'Software' LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "P01",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT COUNT(DISTINCT sf.order_id) AS completed_orders_with_software FROM sales_facts sf WHERE sf.status = 'completed' AND sf.category = 'Software' AND sf.order_date >= '2026-02-01' AND sf.order_date < '2026-03-01'",
+      "attempts": []
+    },
+    {
+      "id": "P02",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT p.product_name, COUNT(DISTINCT sf.customer_id) AS distinct_customers FROM products p LEFT JOIN sales_facts sf ON p.product_id = sf.product_id AND sf.month = '2026-04' AND sf.status = 'completed' GROUP BY p.product_id, p.product_name ORDER BY p.product_name",
+      "attempts": []
+    },
+    {
+      "id": "P02",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT p.product_name, COUNT(DISTINCT sf.customer_id) AS distinct_customers FROM products AS p LEFT JOIN sales_facts AS sf ON sf.product_id = p.product_id AND sf.status = 'completed' AND sf.order_date >= '2026-04-01' AND sf.order_date < '2026-05-01' GROUP BY p.product_id, p.product_name ORDER BY p.product_name LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT p.product_name, COUNT(DISTINCT sf.customer_id) AS distinct_customers FROM products p LEFT JOIN sales_facts sf ON sf.product_id = p.product_id AND sf.status = 'completed' AND sf.order_date >= '2026-04-01' AND sf.order_date < '2026-05-01' GROUP BY p.product_id, p.product_name ORDER BY p.product_name",
+          "sql": "SELECT p.product_name, COUNT(DISTINCT sf.customer_id) AS distinct_customers FROM products AS p LEFT JOIN sales_facts AS sf ON sf.product_id = p.product_id AND sf.status = 'completed' AND sf.order_date >= '2026-04-01' AND sf.order_date < '2026-05-01' GROUP BY p.product_id, p.product_name ORDER BY p.product_name LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT SUM(s.gross_sales_cents) AS gross_sales_cents FROM sales_facts AS s JOIN customers AS c ON s.customer_id = c.customer_id WHERE s.order_date >= '2026-01-01' AND s.order_date < '2026-02-01' AND s.category = 'Accessories' AND c.region IS NULL LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT SUM(s.gross_sales_cents) AS gross_sales_cents\nFROM sales_facts s\nJOIN customers c ON s.customer_id = c.customer_id\nWHERE s.order_date >= '2026-01-01'\n  AND s.order_date < '2026-02-01'\n  AND s.category = 'Accessories'\n  AND c.region IS NULL",
+          "sql": "SELECT SUM(s.gross_sales_cents) AS gross_sales_cents FROM sales_facts AS s JOIN customers AS c ON s.customer_id = c.customer_id WHERE s.order_date >= '2026-01-01' AND s.order_date < '2026-02-01' AND s.category = 'Accessories' AND c.region IS NULL LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT SUM(gross_sales_cents) FROM sales_facts WHERE month = '2026-01' AND category = 'Accessories' AND region IS NULL",
+      "attempts": []
+    },
+    {
+      "id": "P04",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT month, COUNT(DISTINCT customer_id) AS customer_count FROM sales_facts WHERE status = 'completed' AND month IN ('2026-01','2026-02','2026-03','2026-04') GROUP BY month ORDER BY month",
+      "attempts": []
+    },
+    {
+      "id": "P04",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT month, COUNT(DISTINCT customer_id) AS customer_count FROM sales_facts WHERE status = 'completed' AND order_date >= '2026-01-01' AND order_date < '2026-05-01' GROUP BY month ORDER BY month LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT month, COUNT(DISTINCT customer_id) AS customer_count FROM sales_facts WHERE status = 'completed' AND order_date >= '2026-01-01' AND order_date < '2026-05-01' GROUP BY month ORDER BY month",
+          "sql": "SELECT month, COUNT(DISTINCT customer_id) AS customer_count FROM sales_facts WHERE status = 'completed' AND order_date >= '2026-01-01' AND order_date < '2026-05-01' GROUP BY month ORDER BY month LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT customer_id FROM sales_facts WHERE status = 'completed' AND order_date >= '2026-02-01' AND order_date < '2026-03-01' GROUP BY customer_id HAVING COUNT(DISTINCT order_id) >= 2 ORDER BY customer_id ASC LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT customer_id FROM sales_facts WHERE status = 'completed' AND order_date >= '2026-02-01' AND order_date < '2026-03-01' GROUP BY customer_id HAVING COUNT(DISTINCT order_id) >= 2 ORDER BY customer_id ASC",
+          "sql": "SELECT customer_id FROM sales_facts WHERE status = 'completed' AND order_date >= '2026-02-01' AND order_date < '2026-03-01' GROUP BY customer_id HAVING COUNT(DISTINCT order_id) >= 2 ORDER BY customer_id ASC LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT customer_id FROM sales_facts WHERE status = 'completed' AND order_date >= '2026-02-01' AND order_date < '2026-03-01' GROUP BY customer_id HAVING COUNT(DISTINCT order_id) >= 2 ORDER BY customer_id ASC",
+      "attempts": []
+    },
+    {
+      "id": "P06",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT category, SUM(refund_cents) * 1.0 / NULLIF(SUM(gross_sales_cents), 0) AS refund_rate FROM sales_facts WHERE month = '2026-04' GROUP BY category ORDER BY category",
+      "attempts": []
+    },
+    {
+      "id": "P06",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT category, SUM(refund_cents) * 1.0 / NULLIF(SUM(gross_sales_cents), 0) AS refund_rate FROM sales_facts WHERE order_date >= '2026-04-01' AND order_date < '2026-05-01' GROUP BY category ORDER BY category LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT category,\n       SUM(refund_cents) * 1.0 / NULLIF(SUM(gross_sales_cents), 0) AS refund_rate\nFROM sales_facts\nWHERE order_date >= '2026-04-01' AND order_date < '2026-05-01'\nGROUP BY category\nORDER BY category",
+          "sql": "SELECT category, SUM(refund_cents) * 1.0 / NULLIF(SUM(gross_sales_cents), 0) AS refund_rate FROM sales_facts WHERE order_date >= '2026-04-01' AND order_date < '2026-05-01' GROUP BY category ORDER BY category LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "P07",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "P08",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "P08",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": null,
+      "attempts": []
+    }
+  ]
+}

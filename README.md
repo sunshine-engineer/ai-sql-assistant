@@ -2,13 +2,40 @@
 
 > A production-inspired Generative AI SQL Assistant that converts natural language into validated, read-only SQL queries using Large Language Models.
 
-## 🎥 Demo
+## Reviewer demo
 
-> 🚧 Demo GIF coming soon.
+[Watch the current walkthrough](assets/current/reviewer-demo.webm) ·
+[Live regression evidence](docs/benchmark-reliability-status.md) ·
+[Prospective evaluation](docs/prospective-evaluation.md) ·
+[Engineering guide](docs/engineering.md)
 
-<p align="center">
-  <img src="assets/HOME.png" width="100%">
-</p>
+![Reviewed plan and executed results](assets/current/plan.png)
+
+Start without a provider key:
+
+```bash
+docker compose up --build
+# Open http://127.0.0.1:8501 and select Plan demo, Evaluation or Benchmarks.
+```
+
+The recorded walkthrough demonstrates controlled execution without a model call.
+The archived live-model reports separately demonstrate NL-to-SQL behavior.
+
+## Evidence and limits
+
+| Evidence | What it establishes |
+| --- | --- |
+| Current patch: 372 passing local tests; two database integration tests require endpoints | Filter routing, completion accounting, frozen reference outputs and application regressions. |
+| 351 passing tests with disposable PostgreSQL/MySQL in the prior infrastructure snapshot | Application behavior, restricted-reader permissions, truncation and query timeouts. |
+| Docker health and in-container canonical-plan smoke | Reproducible reviewer startup and actual controlled execution. |
+| Three synthetic data instances | Checks the same SQL against changed counts, refunds, missing values and zero denominators. |
+| Recorded live-model/baseline runs, including failures | Measured examples and regression recovery; not general accuracy or production usage. |
+| Separate prospective holdout | Questions frozen before provider evaluation; same-author limitation is explicit in the [protocol](docs/prospective-evaluation.md). |
+
+Current change validation is recorded in [the review follow-up](docs/final-review-follow-up.md).
+The earlier [infrastructure record](evaluation/infrastructure-validation-2026-10-21.json)
+remains unchanged. Hosted identity, verified TLS and real-data access need their
+own deployment verification. This is a personal portfolio prototype.
 
 ## Overview
 This portfolio project demonstrates practical GenAI engineering by combining LLMs, SQL agents, and database connectivity into an interactive Streamlit application.
@@ -16,7 +43,7 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 ### Highlights
 - Natural Language → SQL
 - Bounded LangChain tool-calling workflow
-- Groq-hosted LLM (Qwen 3.6 27B configurable)
+- Groq-hosted LLM (`qwen/qwen3.8-27b` default; configurable)
 - SQLite, MySQL and PostgreSQL support
 - Read-only SQL enforcement
 - SQL AST validation and database read-only safeguards
@@ -88,17 +115,31 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 
 ## Architecture
 ```text
-Streamlit -> bounded conversation -> Groq tool-calling model
-                                      |
-                                      v
-                              query_database tool
-                                      |
-                              SQLGlot AST policy
-                                      |
-                         read-only transaction + timeout
-                                      |
-                                  SQLAlchemy
+Question + bounded conversation
+              |
+      Clarification / preflight
+              |
+       Tool-calling model
+         /           \
+execute_analysis_plan  query_database
+         |                 |
+Intent checks + compiler   Proposed flexible SQL
+         \                 /
+          SQL AST validation
+                  |
+      Read-only execution + limits
+                  |
+    Results, query inspection, charts
+                  |
+ Single canonical: deterministic cited facts
+ Flexible: fact verification / cited fallback
 ```
+
+Canonical plans support a constrained retail metric/filter subset. Multi-value,
+negated or other recognized unsupported filters route to flexible SQL or
+clarification before a canonical plan executes. This recognizer is not a general
+natural-language semantics verifier.
+
 
 ## Project Structure
 ```text
@@ -110,6 +151,11 @@ assistant/connections.py    URLs, connection timeouts, SQLite read-only mode
 assistant/validation.py     Generated SQL AST policy
 assistant/execution.py      Approved schema and controlled execution
 assistant/generation.py     Workflow stages and bounded SQL recovery
+assistant/plans.py          Canonical retail metric compilation
+assistant/plan_intent.py    Explicit intent checks and unsupported-filter routing
+assistant/answers.py        Result-referenced facts and deterministic fallback
+assistant/benchmark.py      Paired model/baseline evaluation and completion accounting
+assistant/scheduling.py     Shared quota admission within request budgets
 assistant/business.py       Versioned retail metric/join/date contract
 assistant/demo.py           Reproducible synthetic retail fixture
 assistant/followups.py      Deterministic month comparisons
@@ -119,7 +165,8 @@ assistant/evaluation.py     Reference and live result-based evaluation
 assistant/evaluation_ui.py  Evaluation dashboard
 assistant/chat.py           Bounded history and database-switch reset
 assistant/presentation.py   Single render/store per chat turn
-evaluation/retail_v1.json   50 questions, reference SQL and frozen expected rows
+evaluation/retail_v1.json   50 regression questions and frozen expected rows
+evaluation/prospective_v1.json  Opt-in, frozen same-author prospective suite
 tests/                      Offline regression and application tests
 sql_queries.sql             PostgreSQL administrator/loader bootstrap
 .github/workflows/tests.yml Offline, reference evaluation and live database CI
@@ -184,10 +231,10 @@ See [the engineering guide](docs/engineering.md) for canonical analysis plans,
 three-instance SQL evaluation, repeated paired live benchmarks, budgets, metadata
 selection, sanitized operational aggregates, and hosted access configuration.
 [Measured benchmark results](docs/benchmark-report.md) include failures and quota
-limitations. [Reliability fixes and pending live checks](docs/benchmark-reliability-status.md)
+limitations. [Reliability fixes and completed live confirmations](docs/benchmark-reliability-status.md)
 record the current follow-up. [Current screenshots and walkthrough](assets/current/README.md) show
 real controlled execution without a provider key. [Validation scope](docs/engineering-validation.md)
-distinguishes local tests, live measurements and infrastructure still unverified. Run `docker compose up --build` for the synthetic-only reviewer package.
+distinguishes local tests, live measurements and the scope of infrastructure verification. Run `docker compose up --build` for the synthetic-only reviewer package.
 
 ## Future Improvements
 - Validate OIDC, per-user DB grants and certificate verification in hosted infrastructure
@@ -199,12 +246,13 @@ MIT
 
 ## Safety policy and limits
 
-The model has only one query tool, and every execution passes through the same
+For the retail demo, the model can use `execute_analysis_plan` or `query_database`;
+other schemas use the flexible SQL tool. Every execution passes through the same
 validator. The initial policy permits simple SELECTs, joins and subqueries;
 CTEs, set operations, comments and functions outside the small allowlist are
 intentionally rejected. This is a conservative subset, not full SQL support.
-Metadata contains column names/types, not sample rows. Only tables discovered
-in the selected schema are approved; views and other schemas are excluded.
+Metadata contains column names/types, not sample rows. Local mode discovers tables in the selected
+schema; hosted mode uses operator-approved views and column projections.
 Python callers can further restrict tables using `QueryService(tables=[...])`.
 Use database grants to restrict sensitive tables/columns for deployed use.
 
