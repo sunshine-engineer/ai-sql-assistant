@@ -1,0 +1,58 @@
+{
+  "scope": "Raw proposed plans and SQL for benchmark-owned synthetic fixtures only.",
+  "rows": [
+    {
+      "id": "R13",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT p.product_name FROM products AS p LEFT JOIN order_items AS oi ON p.product_id = oi.product_id WHERE oi.item_id IS NULL ORDER BY p.product_name LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT p.product_name FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id WHERE oi.item_id IS NULL ORDER BY p.product_name",
+          "sql": "SELECT p.product_name FROM products AS p LEFT JOIN order_items AS oi ON p.product_id = oi.product_id WHERE oi.item_id IS NULL ORDER BY p.product_name LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "R13",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT p.product_name FROM products p LEFT JOIN sales_facts sf ON p.product_id = sf.product_id WHERE sf.item_id IS NULL ORDER BY p.product_name",
+      "attempts": []
+    },
+    {
+      "id": "R30",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT ROUND((SUM(CASE WHEN month = '2026-04' THEN net_revenue_cents ELSE 0 END) - SUM(CASE WHEN month = '2026-03' THEN net_revenue_cents ELSE 0 END)) * 1.0 / NULLIF(SUM(CASE WHEN month = '2026-03' THEN net_revenue_cents ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM sales_facts WHERE month IN ('2026-03', '2026-04')",
+      "attempts": []
+    },
+    {
+      "id": "R30",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT ROUND(CAST((SUM(CASE WHEN order_date >= '2026-04-01' AND order_date < '2026-05-01' THEN net_revenue_cents ELSE 0 END) - SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END)) * 1.0 AS REAL) / NULLIF(SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM sales_facts WHERE order_date >= '2026-03-01' AND order_date < '2026-05-01' LIMIT 201",
+      "attempts": [
+        {
+          "plan": {
+            "metric": "net_revenue_growth_ratio",
+            "dimensions": [],
+            "filters": {},
+            "date_range": [
+              "2026-04-01",
+              "2026-05-01"
+            ],
+            "grain": "item"
+          },
+          "proposed_sql": "SELECT ROUND(CAST((SUM(CASE WHEN order_date >= '2026-04-01' AND order_date < '2026-05-01' THEN net_revenue_cents ELSE 0 END) - SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END)) * 1.0 AS REAL) / NULLIF(SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM sales_facts WHERE order_date >= '2026-03-01' AND order_date < '2026-05-01'",
+          "sql": "SELECT ROUND(CAST((SUM(CASE WHEN order_date >= '2026-04-01' AND order_date < '2026-05-01' THEN net_revenue_cents ELSE 0 END) - SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END)) * 1.0 AS REAL) / NULLIF(SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM sales_facts WHERE order_date >= '2026-03-01' AND order_date < '2026-05-01' LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    }
+  ]
+}

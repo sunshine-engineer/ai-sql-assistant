@@ -1,5 +1,9 @@
 # Measured live benchmark — 2026-10-20
 
+For subsequent fixes, preserved triage results and pending live checks, see the
+[reliability follow-up](benchmark-reliability-status.md). The results below are
+historical and have not been rescored.
+
 ## What was measured
 
 One provider model, `qwen/qwen3.8-27b`, verified through Groq's live model-list
