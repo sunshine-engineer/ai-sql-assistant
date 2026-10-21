@@ -1,5 +1,17 @@
 # Benchmark reliability follow-up — 2026-10-21
 
+**Latest status (2026-10-21): all pending verification is complete.**
+
+| Check | Final evidence |
+| --- | --- |
+| R13 workflow confirmation | Passed on all three datasets; baseline also passed. |
+| Revised R30 baseline confirmation | Passed on all three datasets; canonical workflow also passed. |
+| PostgreSQL/MySQL integration | Full suite: 351 passed, zero skipped, with both disposable endpoints enabled. |
+| Reviewer Docker startup | Healthy, HTTP 200, non-root/read-only execution and canonical plan smoke passed. |
+
+Historical failures and earlier pending lists below are retained as dated
+investigation history; the final follow-up sections close those items.
+
 ## Review outline
 
 1. Preserve the measured successes and failures.
@@ -88,7 +100,7 @@ work resumed. Do not recover or reuse the credential pasted into chat; configure
 a fresh credential locally and never commit or paste it. Continue offline work
 while waiting for that input instead of repeating network calls.
 
-Pending external verification:
+Earlier pending list (closed by the final follow-ups):
 
 1. H08 live rerun is complete: both approaches passed both repetitions on all three
    instances. Clarified R13 passed both baseline repetitions and the first workflow
@@ -222,3 +234,61 @@ one R30 baseline repetition after quota availability is established. Also run th
 remote-database and container CI checks. No further user input is needed for the
 implemented offline fixes; future live runs need a locally configured credential
 and suitable quota. Avoid pasting credentials into chat.
+
+
+## Final confirmation follow-up
+
+The [final confirmation report](../evaluation/reports/2026-10-21-final-confirmations.json)
+completed all four planned attempts: R13 workflow and baseline, and R30 baseline
+and workflow. **All four passed across base, skewed and zero-sales datasets.**
+R13's workflow answer facts were verified; R30 used one model call and a
+canonical deterministic answer. No provider errors, rate limits, budget denials
+or invalid references occurred. This closes both previously pending live checks.
+
+The run used 1 RPM, a 65-second minimum interval, the same estimated 8,000 TPM
+admission ceiling and a 240-second per-request budget. Aggregate quota wait was
+about 205 seconds. These timings include deliberate admission waits. The
+[synthetic diagnostics](../evaluation/diagnostics/2026-10-21-final-confirmations-synthetic.json)
+and triage manifest retain the SQL proposals and checksums. The source snapshot
+matches the preceding policy-parity run. These selected confirmations are not a
+new independent benchmark; earlier connection and quota failures remain recorded.
+
+
+## Real database and container verification
+
+The [infrastructure validation record](../evaluation/infrastructure-validation-2026-10-21.json)
+records **351 tests passed, zero skipped**, with disposable PostgreSQL 16.15 and
+MySQL 8.0.46 endpoints enabled. The real-server tests verified result counts,
+truncation, denied DELETE permissions for the restricted reader, expensive-query
+statement timeouts and successful reads after timeout recovery. Tests use only
+their disposable test tables/users; no user database was used.
+
+Docker 29.7.2 built and started the reviewer package using Python 3.12.13. A
+second cached build included the newly archived final report. The running image
+reached healthy status and returned HTTP 200 from its health endpoint. An
+in-container smoke test created the synthetic retail fixture and executed a
+canonical customer-count plan through QueryService, obtaining 12. Its source
+hash matched the successful live confirmation report. UID 10001, read-only root
+filesystem and dropped capabilities were verified from the running container.
+
+The first MySQL image download timed out awaiting Docker Hub response headers;
+one retry reused downloaded layers and succeeded. This identified that specific
+image-pull failure, not the cause of earlier Codex reconnect messages. No product
+code change was needed for the completed local checks. Hosted OIDC, external
+certificate-verified TLS and real-data authorization remain separate deployment
+checks, outside these synthetic integration tests.
+
+Reproduce the database suite using disposable endpoints:
+
+```bash
+# Configure both URLs locally for disposable PostgreSQL/MySQL databases.
+# Tests create/drop test tables and test_reader users; never use production URLs.
+python -m pytest -q
+# Reviewer image build and health check:
+docker compose up --build --detach --wait --wait-timeout 120
+curl --fail http://127.0.0.1:8501/_stcore/health
+```
+
+Both TEST_POSTGRES_ADMIN_URL and TEST_MYSQL_ADMIN_URL must be configured for
+pytest to include the real-server tests. Their exact ephemeral ports and
+credentials are deliberately omitted from the published validation record.

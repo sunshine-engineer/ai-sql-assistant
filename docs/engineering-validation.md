@@ -2,6 +2,14 @@
 
 Outline: implemented boundaries, measured evidence, reviewer artifacts and limits.
 
+**Current follow-up (2026-10-21):** the reliability branch passed all 351 tests
+with real disposable PostgreSQL/MySQL endpoints, including the two previously
+skipped integration tests. The R13/R30 live confirmations and Docker build, health and canonical-plan
+smoke checks passed. See the
+[reliability validation record](benchmark-reliability-status.md) for container
+verification and current delivery status. The earlier feature snapshot below
+retains its original limitations.
+
 Branch: `feat/measured-analytics-engineering`, based on the existing feature
 checkout. Includes the preceding four correctness fixes that were still local
 when this work started.

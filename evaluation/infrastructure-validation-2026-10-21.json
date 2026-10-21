@@ -1,0 +1,28 @@
+{
+  "recorded_at": "2026-10-21T03:46:20.834866+00:00",
+  "scope": "Disposable synthetic database integration and local reviewer-container smoke; does not verify hosted OIDC or verified TLS.",
+  "local_python": "3.14.4",
+  "suite": {
+    "passed": 351,
+    "skipped": 0,
+    "command": "python -m pytest -q with TEST_POSTGRES_ADMIN_URL and TEST_MYSQL_ADMIN_URL pointing to disposable containers"
+  },
+  "database_versions": {
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+    "mysql": "8.0.46"
+  },
+  "container": {
+    "image": "sha256:bd03978e5e84fdf946d5c013565d09ab70bae4ffd2ff4abadb4bf735cf7be058",
+    "health": "healthy",
+    "read_only_rootfs": true,
+    "cap_drop": [
+      "ALL"
+    ],
+    "health_http_status": 200,
+    "uid": 10001,
+    "python": "3.12.13",
+    "canonical_customer_count": 12,
+    "final_confirmation_report_included": true,
+    "source_matches_live_report": true
+  }
+}
