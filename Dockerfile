@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && useradd --create-home --uid 10001 reviewer
 COPY --chown=reviewer:reviewer assistant ./assistant
 COPY --chown=reviewer:reviewer evaluation/retail_v1.json evaluation/heldout_v1.json ./evaluation/
+COPY --chown=reviewer:reviewer evaluation/prospective_v1.json ./evaluation/
 COPY --chown=reviewer:reviewer evaluation/reports ./evaluation/reports
 COPY --chown=reviewer:reviewer app.py student.db ./
 RUN mkdir -p data .telemetry && chown -R reviewer:reviewer data .telemetry
