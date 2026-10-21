@@ -59,4 +59,10 @@ rate is presented as general NL-to-SQL accuracy.
 - The earlier 351-test run with PostgreSQL/MySQL and reviewer-container smoke
   remains in the archived infrastructure record. This patch does not claim a new
   local Docker or real-server run.
-- Live prospective results and MR/PR checks are recorded after completion.
+- Frozen prospective live run: workflow 8/8 and baseline 8/8 pipeline/control
+  outcomes; each passed all six SQL questions on all three instances. All six
+  workflow model-answer candidates were verified. No provider failures or quota
+  denials occurred. The sample is same-author, synthetic and single-repeat, and
+  the workflow used flexible SQL throughout; no general superiority claim.
+- See the [complete report and limitations](prospective-evaluation.md#recorded-v1-results).
+  MR/PR CI separately verifies the final branch.

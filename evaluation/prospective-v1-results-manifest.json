@@ -1,0 +1,10 @@
+{
+  "scope": "Prospective same-author, one-repetition synthetic sample; not independent authorship, production accuracy or repeated stability. Historical reports unchanged.",
+  "source_commit": "d70e5f4",
+  "files": {
+    "evaluation/reports/2026-10-21-prospective-v1.json": "915e2f7b6602fbd6554d8825cfb06b1e48440ba52c908d3803670f4e3bb487e1",
+    "evaluation/diagnostics/2026-10-21-prospective-v1-synthetic.json": "99831a716d67dd15aa58fe84b17d32372e05ded6082b9968c67811ba8479cf3c",
+    "evaluation/prospective-v1-freeze.json": "dbe110bc053aa8c817adfd97a27f9c2c1e75e129e3f68148504423a89a2147c0",
+    "evaluation/prospective_v1.json": "ba14a0790f54f5606d614c80344a61644aab64bbd3660d72cc45089563c3d456"
+  }
+}

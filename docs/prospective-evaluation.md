@@ -68,3 +68,34 @@ fed into the operational system prompt.
 
 The separation between component checks, regression tests and benchmarking follows
 [LangChain’s evaluation guidance](https://docs.langchain.com/langsmith/evaluation-types).
+
+
+## Recorded v1 results
+
+[Recorded paired run](../evaluation/reports/2026-10-21-prospective-v1.json) ·
+[Synthetic SQL diagnostics](../evaluation/diagnostics/2026-10-21-prospective-v1-synthetic.json) ·
+[Checksums](../evaluation/prospective-v1-results-manifest.json)
+
+| Measure | Workflow | One-shot SQL |
+| --- | --- | --- |
+| Pipeline/control outcomes | 8/8 | 8/8 |
+| SQL questions matching all three instances | 6/6 | 6/6 |
+| Verified model-generated answer candidates | 6/6 | N/A |
+| Canonical deterministic answers | 0 | N/A |
+| Recorded provider calls | 13 | 6 |
+| Incomplete/unattempted cases | 0/0 | 0/0 |
+
+There were no provider errors, rate limits, quota-budget denials or invalid
+references. Both approaches matched every SQL reference. The workflow selected
+flexible SQL for all six queries, so this run does not measure the canonical
+terminal-answer optimization or establish an accuracy advantage over baseline.
+The new canonical-filter guard is covered by the separate scripted regressions.
+One repetition establishes no repeated-run stability even though all planned
+slots are complete and the schema's consistency counter is 8 for each approach.
+
+Aggregate quota waiting was about 687 seconds. Do not interpret run durations as
+unpaced inference latency. Source and suite hashes match the pre-run freeze;
+there were no implementation or prompt changes during the run. These eight
+same-author examples are a small prospective sample, not a general accuracy
+estimate or evidence of real-user adoption. Future tuning on their outcomes
+retires v1 from holdout status.
