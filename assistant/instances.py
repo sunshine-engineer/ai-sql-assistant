@@ -27,6 +27,8 @@ def build_instance(directory, name):
     Raises:
         ValueError: If the instance name is unknown.
         FileExistsError: If its output database already exists.
+        OSError: If temporary fixture files cannot be created.
+        sqlite3.Error: If fixture mutation or semantic fact rebuilding fails.
     """
     if name not in INSTANCES:
         raise ValueError("Unknown instance.")

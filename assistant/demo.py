@@ -38,6 +38,10 @@ def build_demo(path):
 
     Returns:
         Path: Location of the reproducible retail database.
+
+    Raises:
+        OSError: If the output directory or temporary fixture cannot be created or replaced.
+        sqlite3.Error: If fixture schema creation or data loading fails.
     """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)

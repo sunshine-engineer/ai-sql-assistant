@@ -37,7 +37,8 @@ and the reviewer image use Python 3.12.
 | Reference evaluation and alternate data instances | **50/50** reference cases; **144/144** instance checks; constant-query witness passes base and fails both altered instances as expected. |
 | Dependency consistency | `pip check` passed; evaluation/benchmark/student-builder/capture CLI help commands passed. |
 | Text configuration, examples, local links, binary integrity | TOML/YAML parse; 245 local links resolve; 19 Bash blocks pass syntax checks; 2 CSVs retain consistent row widths; 14 PNGs verify; SQLite integrity check and WebM signature pass. All retained JSON/CSV/media/database/LICENSE bytes match the parent. |
-| Docker image and real PostgreSQL/MySQL | Locally blocked: `/usr/bin/docker` exits with `Input/output error` before reaching the daemon; user is restarting Docker Desktop/WSL integration. |
+| GitHub CI on implementation commit `f6043cc` | All three jobs passed: Python 3.12 offline/lint/docs/reference checks, real disposable PostgreSQL/MySQL, and Docker build/startup/HTTP health. [Run](https://github.com/sunshine-engineer/ai-sql-assistant/actions/runs/39837829320). Subsequent edits clarify docstrings and this record; inspect final-head checks on the PR. |
+| Local Docker image and real PostgreSQL/MySQL | Locally blocked: `/usr/bin/docker` exits with `Input/output error` before reaching the daemon; user is restarting Docker Desktop/WSL integration. |
 
 An AST comparison of existing Python modules, ignoring docstrings/import ordering
 and resolving extracted scalar defaults, flagged only the three intentional
@@ -47,9 +48,9 @@ The full suite checks observable behavior; the AST comparison is supporting evid
 not a proof of semantic equivalence.
 
 No live provider calls or new screenshots were required for this maintenance scope.
-Historical Docker/database verification is not claimed for this revision. CI has
-separate fresh PostgreSQL, MySQL, and reviewer-image jobs; their actual results must
-be checked on this PR. Existing hosted OIDC/TLS and real-data deployment acceptance
+Historical Docker/database verification is not claimed as evidence for this revision.
+The new CI run above exercises fresh PostgreSQL, MySQL, and reviewer-image jobs on
+`f6043cc`; final-head checks must also be inspected on this PR. Existing hosted OIDC/TLS and real-data deployment acceptance
 remain outside this change, as documented in [HANDOVER.md](HANDOVER.md).
 
 ## Remaining environment check

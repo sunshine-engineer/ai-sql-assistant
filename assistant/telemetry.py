@@ -29,6 +29,10 @@ def record(path, trace):
     Args:
         path: Filesystem path of the fixture, report, or telemetry database.
         trace: Operational trace; only explicitly allowlisted scalar counters are persisted.
+
+    Raises:
+        OSError: If the telemetry parent directory cannot be created.
+        sqlite3.Error: If the local aggregate database cannot be opened or written.
     """
     outcome = trace.get("outcome")
     outcome = outcome if outcome in OUTCOMES else "failed"
@@ -64,6 +68,9 @@ def aggregate(path):
 
     Returns:
         dict: Outcome, usage-completeness, latency, retry, and tool-call aggregates.
+
+    Raises:
+        sqlite3.Error: If the database cannot be read or has no requests table.
     """
     with sqlite3.connect(path) as db:
         rows = db.execute("SELECT * FROM requests").fetchall()

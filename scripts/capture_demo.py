@@ -12,7 +12,12 @@ from playwright.sync_api import sync_playwright
 
 
 def main():
-    """Capture the actual reviewer UI screenshots and video using Playwright."""
+    """Capture the actual reviewer UI screenshots and video using Playwright.
+
+    Raises:
+        playwright.sync_api.Error: If Chromium is unavailable or the expected UI workflow cannot complete.
+        OSError: If the media output directory or capture files cannot be written.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", default="http://127.0.0.1:8507")
     parser.add_argument("--output", type=Path, default=Path("assets/current"))

@@ -38,6 +38,10 @@ def load_cases():
 
     Returns:
         list[dict]: Frozen question contracts and expected results.
+
+    Raises:
+        OSError: If the versioned suite file cannot be read.
+        json.JSONDecodeError: If the suite file is not valid JSON.
     """
     return json.loads(CASE_FILE.read_text())["cases"]
 

@@ -58,6 +58,10 @@ def suites(include_prospective=False):
 
     Returns:
         dict: Selected suite names mapped to versioned case lists.
+
+    Raises:
+        OSError: If a requested suite file cannot be read.
+        json.JSONDecodeError: If a requested suite is not valid JSON.
     """
     groups = {"development": load_cases(), "heldout": json.loads(HELDOUT.read_text())["cases"]}
     if include_prospective:

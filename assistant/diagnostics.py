@@ -28,6 +28,10 @@ class SyntheticSuite:
 
         Returns:
             SyntheticSuite: Active owner containing services for all synthetic instances.
+
+        Raises:
+            OSError: If the temporary synthetic directory cannot be created.
+            SQLAlchemyError: If synthetic engine setup or schema inspection fails; owned resources are closed.
         """
         self._directory = tempfile.TemporaryDirectory(prefix="synthetic-benchmark-")
         try:
@@ -92,6 +96,9 @@ class SyntheticSuite:
 
         Yields:
             SyntheticDiagnostics: Collector authorized for this active synthetic suite.
+
+        Raises:
+            PermissionError: If the supplied services are not owned by this active suite.
         """
         self.authorize(services)
         yield SyntheticDiagnostics(self, services)
@@ -139,6 +146,9 @@ class SyntheticDiagnostics:
             repetition: One-based benchmark repetition number.
             sql: Untrusted SQL text to validate before any execution.
             attempts: Inspectable workflow attempts restricted to synthetic diagnostic fields.
+
+        Raises:
+            PermissionError: If ownership is invalid or the case differs from the curated suite.
         """
         self._owner.authorize(self._services)
         # Only source plans/SQL and known synthetic case IDs. No model prose,
@@ -167,6 +177,9 @@ class SyntheticDiagnostics:
 
         Returns:
             dict: Sanitized operational metadata.
+
+        Raises:
+            PermissionError: If the suite no longer owns the active diagnostic services.
         """
         self._owner.authorize(self._services)
         return {
