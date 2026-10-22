@@ -1,3 +1,5 @@
+<!-- File: docs/prospective-evaluation.md | Purpose: Prospective evaluation and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Prospective retail evaluation v1
 
 Outline: authorship, freeze, protocol, result interpretation and reproduction.

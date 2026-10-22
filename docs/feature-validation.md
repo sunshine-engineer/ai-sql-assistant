@@ -1,3 +1,5 @@
+<!-- File: docs/feature-validation.md | Purpose: Feature validation and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Analytics feature validation
 
 > **Historical validation snapshot / investigation log.** Counts, pending items and

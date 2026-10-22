@@ -1,3 +1,8 @@
+# File: Dockerfile
+# Purpose: Build the restricted synthetic-data reviewer image with a non-root runtime.
+# Maintainer: sunshine-engineer
+# Modified: 2026-10-23
+
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
     ASSISTANT_DEPLOYMENT=reviewer ASSISTANT_TELEMETRY_PATH=/app/.telemetry/requests.db

@@ -1,3 +1,8 @@
+# File: requirements.txt
+# Purpose: Pin application runtime dependencies used by CI and the reviewer image.
+# Maintainer: sunshine-engineer
+# Modified: 2026-10-23
+
 psycopg[binary]==3.3.4
 streamlit[auth]==1.60
 langchain-core==1.6.12

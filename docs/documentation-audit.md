@@ -1,3 +1,5 @@
+<!-- File: docs/documentation-audit.md | Purpose: Documentation audit and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Documentation audit — 2026-10-22
 
 Outline: scope, corrections, checks, limits and acceptance.

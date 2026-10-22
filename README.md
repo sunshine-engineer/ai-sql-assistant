@@ -1,8 +1,11 @@
+<!-- File: README.md | Purpose: Project entry point, demo, setup, architecture, and evidence boundaries. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # 🤖 AI SQL Assistant
 
 > A production-inspired Generative AI SQL Assistant that converts natural language into validated, read-only SQL queries using Large Language Models.
 
 **Maintainer handover:** [setup, configuration, operations, evidence and acceptance](docs/HANDOVER.md).
+[Configuration reference](docs/configuration.md) · [Contributor checks](CONTRIBUTING.md).
 
 ## Reviewer demo
 
@@ -27,6 +30,7 @@ The archived live-model reports separately demonstrate NL-to-SQL behavior.
 
 | Evidence | What it establishes |
 | --- | --- |
+| Consistency maintenance: 375 passing local tests; two remote tests skipped locally | Formatting, documentation, configuration defaults, maintenance commands, and existing application regressions; see [current validation](docs/consistency-validation.md). |
 | PR #5 snapshot: 372 passing local tests; two database integration tests require endpoints | Filter routing, completion accounting, frozen reference outputs and application regressions. |
 | 351 passing tests with disposable PostgreSQL/MySQL in the prior infrastructure snapshot | Application behavior, restricted-reader permissions, truncation and query timeouts. |
 | Docker health and in-container canonical-plan smoke | Reproducible reviewer startup and actual controlled execution. |
@@ -34,15 +38,18 @@ The archived live-model reports separately demonstrate NL-to-SQL behavior.
 | Recorded live-model/baseline runs, including failures | Measured examples and regression recovery; not general accuracy or production usage. |
 | Separate prospective holdout | Questions frozen before provider evaluation; same-author limitation is explicit in the [protocol](docs/prospective-evaluation.md). |
 
-Current change validation is recorded in [the review follow-up](docs/final-review-follow-up.md).
+Current consistency-change validation is recorded in [the maintenance report](docs/consistency-validation.md).
+The earlier feature review is retained in [the review follow-up](docs/final-review-follow-up.md).
 The earlier [infrastructure record](evaluation/infrastructure-validation-2026-10-21.json)
 remains unchanged. Hosted identity, verified TLS and real-data access need their
 own deployment verification. This is a personal portfolio prototype.
 
 ## Overview
+
 This portfolio project demonstrates practical GenAI engineering by combining LLMs, SQL agents, and database connectivity into an interactive Streamlit application.
 
 ### Highlights
+
 - Natural Language → SQL
 - Bounded LangChain tool-calling workflow
 - Groq-hosted LLM (`qwen/qwen3.8-27b` default; configurable)
@@ -63,6 +70,7 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 - Separate connection, validation, execution, generation, chat and presentation modules
 
 ## Tech Stack
+
 - Python
 - Streamlit
 - LangChain
@@ -75,6 +83,7 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 - SQLGlot AST validation
 
 ## Features
+
 | Feature | Status |
 |---|---|
 | Natural language querying | ✅ |
@@ -96,15 +105,18 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 | 50-case evaluation dashboard/CLI | ✅ |
 
 ### Chat Interface
+
 ![Chat Interface](assets/Chat_Interface.png)
 
 ### Database Selection
+
 ![Database Selection](assets/db_select_sqllite.png)
 ![Database Selection](assets/DB_Select_MySQL.png)
 ![Database Selection](assets/db_select_psql.png)
 
 
 ## Security
+
 - Validates generated SQL before every query execution; natural-language keywords are not a security boundary.
 - Prompt instructs the model to generate only SELECT queries.
 - SQLite opened in read-only mode.
@@ -113,9 +125,11 @@ This portfolio project demonstrates practical GenAI engineering by combining LLM
 
 
 ### SQL Guardrails
+
 ![Security](assets/guard_rails.png)
 
 ## Architecture
+
 ```text
 Question + bounded conversation
               |
@@ -144,43 +158,45 @@ natural-language semantics verifier.
 
 
 ## Project Structure
-```text
-app.py                      Minimal Streamlit launcher
-assistant/config.py         Application settings and shared defaults
-assistant/ui.py             Sidebar, session reset and UI composition
-assistant/runtime.py        Service/model construction and resource cleanup
-assistant/connections.py    URLs, connection timeouts, SQLite read-only mode
-assistant/validation.py     Generated SQL AST policy
-assistant/execution.py      Approved schema and controlled execution
-assistant/generation.py     Workflow stages and bounded SQL recovery
-assistant/plans.py          Canonical retail metric compilation
-assistant/plan_intent.py    Explicit intent checks and unsupported-filter routing
-assistant/answers.py        Result-referenced facts and deterministic fallback
-assistant/benchmark.py      Paired model/baseline evaluation and completion accounting
-assistant/scheduling.py     Shared quota admission within request budgets
-assistant/business.py       Versioned retail metric/join/date contract
-assistant/demo.py           Reproducible synthetic retail fixture
-assistant/followups.py      Deterministic month comparisons
-assistant/charts.py         Charts from executed values
-assistant/tracing.py        Redacted operational trace allowlist
-assistant/evaluation.py     Reference and live result-based evaluation
-assistant/evaluation_ui.py  Evaluation dashboard
-assistant/chat.py           Bounded history and database-switch reset
-assistant/presentation.py   Single render/store per chat turn
-evaluation/retail_v1.json   50 regression questions and frozen expected rows
-evaluation/prospective_v1.json  Opt-in, frozen same-author prospective suite
-tests/                      Offline regression and application tests
-sql_queries.sql             PostgreSQL administrator/loader bootstrap
-.github/workflows/tests.yml Offline, reference evaluation and live database CI
-```
 
-The UI depends on configuration, chat state, presentation and runtime composition.
-Runtime constructs the model and database service; it always disposes the engine,
-including when initialization or request handling fails. SQL validation and
-execution remain independent of Streamlit, so other interfaces can reuse them.
-Importing the launcher does not render the UI or connect to a database.
+| Directory / entry point | Purpose and contents |
+| --- | --- |
+| `assistant/` | Importable application: UI composition and dashboards, configuration/connections, read-only execution policy, business plans/intent checks, bounded generation, result-backed answers, budgets/scheduling, telemetry, and evaluation runners. |
+| `scripts/` | Standalone maintenance: student fixture builder, reviewer browser capture, and documentation/evidence consistency checks. Imports perform no maintenance work. |
+| `tests/` | Offline unit/regression tests, Streamlit application tests, maintenance command tests, and opt-in disposable PostgreSQL/MySQL integration tests. |
+| `docs/` | Maintainer handover, configuration reference, file inventory, contributor-change validation, architecture guides, and explicitly dated historical milestone evidence. Start with [HANDOVER.md](docs/HANDOVER.md). |
+| `evaluation/` | Versioned question suites, pre-run freezes, manifests, infrastructure evidence, and aggregate samples. [Artifact guide](evaluation/README.md). |
+| `evaluation/reports/` | Immutable dated live-model/baseline reports, including unsuccessful and incomplete attempts. |
+| `evaluation/diagnostics/` | Raw proposed plans/SQL captured only for curated questions on benchmark-owned synthetic data. |
+| `evaluation/results/` (ignored) | Regenerable local reference and instance-check outputs. |
+| `deployment/` | Hosted Streamlit secrets template with placeholder OIDC, provider, and per-user database grants. |
+| `assets/` | Legacy screenshots retained for existing links; [provenance and limitations](assets/README.md). |
+| `assets/current/` | Dated reviewer screenshots/video and their capture instructions; recordings are version-specific. |
+| `dataset/` | Legacy market-index CSV inputs for the PostgreSQL bootstrap example; separate from synthetic retail evaluation. [Input notes](dataset/README.md). |
+| `data/` (generated/ignored) | Reproducible retail SQLite fixture; created on demand, not authoritative source data. |
+| `.telemetry/` (optional/ignored) | Local sanitized operational aggregate database; owner controls retention. |
+| `.streamlit/` (local/ignored secrets) | Privately supplied hosted authentication/provider/database configuration. |
+| `.github/workflows/` | CI format/doc checks, offline evaluations, disposable remote databases, and reviewer container startup. |
+| `app.py` | Minimal Streamlit launcher; importing it does not render or connect. |
+| `sqlite.py` | Compatibility launcher for `python -m scripts.build_student`; the implementation lives in `scripts/`. |
+| `student.db` | Original bundled synthetic five-row student demo, opened read-only by the app. |
+| `sql_queries.sql` | Fresh-only PostgreSQL administrator/loader bootstrap and market-data examples. |
+| `Dockerfile`, `compose.yaml`, `.dockerignore` | Restricted synthetic-only reviewer image, localhost deployment, and explicit build inputs. |
+| `requirements*.txt`, `pyproject.toml`, `.editorconfig` | Runtime/dev/browser dependencies and shared formatting/lint conventions. |
+| `.env.example`, `.gitignore` | Documented optional environment template and exclusions for secrets/transient files. |
+
+[Every project file and its purpose](docs/file-index.md) ·
+[Configuration and environment variables](docs/configuration.md) ·
+[Contribution and validation conventions](CONTRIBUTING.md).
+
+The UI depends on configuration, chat state, presentation, and runtime composition.
+Runtime creates request-scoped services/models and disposes the engine even when
+setup or request handling fails. Validation and execution remain independent of
+Streamlit. Shared defaults live in `assistant/config.py`; secrets are supplied at
+runtime. Fixed safety limits and frozen synthetic evidence remain explicit.
 
 ## Installation
+
 ```bash
 git clone https://github.com/sunshine-engineer/ai-sql-assistant.git
 cd ai-sql-assistant
@@ -191,6 +207,7 @@ streamlit run app.py
 ```
 
 ## Why this project?
+
 This application showcases practical GenAI engineering skills including LLM integration, agentic workflows, prompt engineering, SQL safety, multi-database connectivity, bounded context, UI development, and production-oriented guardrails.
 
 ## Analytics walkthrough
@@ -239,11 +256,13 @@ real controlled execution without a provider key. [Validation scope](docs/engine
 distinguishes local tests, live measurements and the scope of infrastructure verification. Run `docker compose up --build` for the synthetic-only reviewer package.
 
 ## Future Improvements
+
 - Validate OIDC, per-user DB grants and certificate verification in hosted infrastructure
 - Larger held-out and cross-dialect model evaluation
 - Domain contracts for user-supplied schemas
 
 ## License
+
 MIT
 
 ## Safety policy and limits

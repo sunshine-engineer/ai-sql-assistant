@@ -1,3 +1,5 @@
+<!-- File: docs/benchmark-reliability-status.md | Purpose: Benchmark reliability status and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Benchmark reliability follow-up — 2026-10-21
 
 > **Historical validation snapshot / investigation log.** Counts, pending items and

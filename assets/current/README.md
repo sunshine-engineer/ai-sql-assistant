@@ -1,3 +1,5 @@
+<!-- File: assets/current/README.md | Purpose: Recorded UI media provenance and recapture instructions. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Recorded reviewer walkthrough
 
 Captured during the 2026-10-20 engineering milestone. Screens show that version;

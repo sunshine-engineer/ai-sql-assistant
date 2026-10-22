@@ -1,7 +1,14 @@
+<!-- File: docs/HANDOVER.md | Purpose: Handover and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Maintainer handover
 
 Reviewed: **2026-10-22**. Scope: the personal portfolio/reviewer prototype and
 maintainer transfer. This is not approval to operate real data in a public service.
+
+For the subsequent project consistency changes, see [configuration](configuration.md),
+[contributor conventions](../CONTRIBUTING.md), [file inventory](file-index.md), and
+[validation](consistency-validation.md). This handover's source-bound historical
+verification remains specific to the revisions recorded below.
 
 Outline: status and document map → setup → configuration → architecture →
 validation → operations/recovery → acceptance and transfer.

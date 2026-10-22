@@ -1,3 +1,5 @@
+<!-- File: VALIDATION.md | Purpose: Historical initial modularization validation record. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Fix validation
 
 > **Historical validation snapshot / investigation log.** Counts, pending items and

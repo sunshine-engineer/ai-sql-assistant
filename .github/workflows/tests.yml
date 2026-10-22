@@ -1,3 +1,8 @@
+# File: .github/workflows/tests.yml
+# Purpose: Validate formatting, offline behavior, remote database controls, and container startup.
+# Maintainer: sunshine-engineer
+# Modified: 2026-10-23
+
 name: Tests
 on: [push, pull_request]
 permissions:
@@ -14,6 +19,9 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements-dev.txt
       - run: python -m pip check
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: python -m scripts.check_consistency
       - run: python -m pytest -q
       - run: python -m assistant.evaluation --output evaluation/results/reference.json
       - run: python -m assistant.instance_checks --output evaluation/results/instance-checks.json

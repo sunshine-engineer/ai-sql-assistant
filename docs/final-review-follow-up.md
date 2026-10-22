@@ -1,3 +1,5 @@
+<!-- File: docs/final-review-follow-up.md | Purpose: Final review follow up and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Final portfolio review follow-up
 
 > **Historical validation snapshot / investigation log.** Counts, pending items and

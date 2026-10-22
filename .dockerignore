@@ -1,3 +1,8 @@
+# File: .dockerignore
+# Purpose: Allow only required runtime inputs into the reviewer build context.
+# Maintainer: sunshine-engineer
+# Modified: 2026-10-23
+
 *
 !requirements.txt
 !assistant/

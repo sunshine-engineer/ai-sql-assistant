@@ -1,3 +1,5 @@
+<!-- File: docs/benchmark-report.md | Purpose: Benchmark report and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Measured live benchmark — 2026-10-20
 
 > **Historical validation snapshot / investigation log.** Counts, pending items and

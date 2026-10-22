@@ -1,3 +1,5 @@
+<!-- File: docs/analytics.md | Purpose: Analytics and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Analytics workflow and evaluation
 
 Outline: data and definitions, query inspection, recovery and follow-ups,

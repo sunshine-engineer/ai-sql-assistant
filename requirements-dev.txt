@@ -1,2 +1,8 @@
+# File: requirements-dev.txt
+# Purpose: Add test and consistency tools to the runtime dependency set.
+# Maintainer: sunshine-engineer
+# Modified: 2026-10-23
+
 -r requirements.txt
 pytest>=8,<10
+ruff==0.14.3

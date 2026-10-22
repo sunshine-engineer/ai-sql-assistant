@@ -1,3 +1,5 @@
+<!-- File: docs/engineering-validation.md | Purpose: Engineering validation and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Engineering feature validation
 
 > **Historical validation snapshot / investigation log.** Counts, pending items and

@@ -1,3 +1,5 @@
+<!-- File: docs/engineering.md | Purpose: Engineering and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Measured analytics engineering
 
 Start with the [handover and operations guide](HANDOVER.md) for configuration,
