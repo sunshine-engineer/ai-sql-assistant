@@ -1,5 +1,10 @@
 # Analytics feature validation
 
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
+
 Outline: implemented scope, executed evidence, reproducible commands and limits.
 
 ## Scope

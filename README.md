@@ -2,6 +2,8 @@
 
 > A production-inspired Generative AI SQL Assistant that converts natural language into validated, read-only SQL queries using Large Language Models.
 
+**Maintainer handover:** [setup, configuration, operations, evidence and acceptance](docs/HANDOVER.md).
+
 ## Reviewer demo
 
 [Watch the current walkthrough](assets/current/reviewer-demo.webm) ·
@@ -25,7 +27,7 @@ The archived live-model reports separately demonstrate NL-to-SQL behavior.
 
 | Evidence | What it establishes |
 | --- | --- |
-| Current patch: 372 passing local tests; two database integration tests require endpoints | Filter routing, completion accounting, frozen reference outputs and application regressions. |
+| PR #5 snapshot: 372 passing local tests; two database integration tests require endpoints | Filter routing, completion accounting, frozen reference outputs and application regressions. |
 | 351 passing tests with disposable PostgreSQL/MySQL in the prior infrastructure snapshot | Application behavior, restricted-reader permissions, truncation and query timeouts. |
 | Docker health and in-container canonical-plan smoke | Reproducible reviewer startup and actual controlled execution. |
 | Three synthetic data instances | Checks the same SQL against changed counts, refunds, missing values and zero denominators. |

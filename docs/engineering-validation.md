@@ -1,5 +1,10 @@
 # Engineering feature validation
 
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
+
 Outline: implemented boundaries, measured evidence, reviewer artifacts and limits.
 
 **Current follow-up (2026-10-21):** the reliability branch passed all 351 tests

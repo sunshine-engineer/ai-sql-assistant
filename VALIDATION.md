@@ -1,5 +1,10 @@
 # Fix validation
 
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](docs/HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
+
 Outline: scope, executed checks, issue coverage, remaining integration checks.
 
 **2026-10-21 follow-up:** real PostgreSQL/MySQL integration is now verified; all

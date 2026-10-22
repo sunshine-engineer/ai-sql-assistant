@@ -3,6 +3,9 @@
 Outline: data and definitions, query inspection, recovery and follow-ups,
 evaluation, trace privacy, and verification boundaries.
 
+For operator setup, configuration, recovery and ownership, start with the
+[current handover guide](HANDOVER.md).
+
 ## Data and business contract
 
 All data is synthetic. `python -m assistant.demo --output data/retail-v1.db`
@@ -25,7 +28,9 @@ erDiagram
 guidance, date conventions, missing-data rules and synonyms. Amounts are integer
 USD cents. Gross sales exclude cancelled orders. Net revenue subtracts all
 refunds attributed to the original order month. Refunds can contain multiple
-rows per item: aggregate before joining if combining gross and refunded amounts.
+rows per item. Generated SQL must use sales_facts for refund analysis; raw
+refund joins are blocked rather than accepted merely because an aggregation
+appears in the SQL.
 `sales_facts` pre-aggregates refunds to item grain to avoid this fan-out.
 Monthly/category targets must join a monthly/category aggregate on both keys.
 
@@ -46,12 +51,20 @@ validation/execution outcomes, result columns/rows, returned row count,
 truncation and timing. Evidence is cleared with the conversation on a connection
 change. Assumptions are model supplied and may be wrong.
 
+The retail workflow offers execute_analysis_plan and query_database. Supported
+plans compile canonical metric expressions and pass explicit intent checks.
+Recognized multi-value, OR, negated or unsupported conditions route to controlled
+flexible SQL or clarification before a partial canonical plan can execute.
+The recognizer is not general intent verification.
+
 Only the controlled query service executes model SQL. It validates at preview
 and execution boundaries. Read-only policy rejections are terminal. Recoverable
 identifier/syntax errors allow at most two repairs; timeouts and connection
-errors stop. Maximums remain four tool calls and five model rounds. A final
+errors stop. Maximums remain four tool calls and five model rounds. A single successful canonical-plan call renders cited facts deterministically,
+without a second model summary. Flexible SQL and multi-tool turns use the
+structured-answer verification path below. A final
 numerical answer needs successful query evidence; otherwise the workflow asks
-for clarification. Final output must contain structured facts with `result_id`,
+for clarification. For the model-summary path, the candidate must contain structured facts with `result_id`,
 zero-based `row` and `column`, and `value`. References must point to the last
 successful result and match its cells. The app renders cited source values.
 Invalid answers receive a deterministic fallback; raw model prose is not shown.
@@ -100,8 +113,10 @@ Two modes have distinct meanings:
 - **Live model**: ask the workflow each question, execute its generated SQL, and
   compare the final executed result to the frozen rows. Report query result
   correctness and model-answer faithfulness separately, alongside clarification,
-  refusal and unsupported outcomes. Answered cases must pass both SQL-result and
-  structured-answer checks. A safe fallback does not rescue the model score.
+  refusal and unsupported outcomes. Answered cases in the workflow evaluation must pass SQL-result and answer
+  checks. Deterministic answers use displayed verification, while model-generated
+  candidates use model verification. A safe fallback does not rescue a rejected
+  model candidate's score.
   Preflight controls can resolve some cases without a model call, so outcome
   scores measure the application, not exclusively the LLM.
 
@@ -118,9 +133,17 @@ The dashboard runs a selected batch (default live batch: five cases), labels its
 mode and scope, displays category/outcome scores and latency p50/p95, and exports
 JSON. Exports include case IDs and redacted traces, not arbitrary prompts, SQL or
 result rows. Reports are stored in session or in the ignored
-`evaluation/results/` directory; no live results are bundled or invented.
-Model/provider failures and rate limits are recorded as failed cases. The CLI
-returns nonzero for any case failure. Reference checks also run in CI and are
+`evaluation/results/` directory for new runs. Frozen live reports are bundled in
+`evaluation/reports/` and shown in Benchmarks; their source/suite versions and
+limitations must be preserved. The opt-in [prospective set](prospective-evaluation.md)
+is same-author, not independently authored. Its six SQL tasks and two application
+controls have separate meanings.
+Model/provider failures and rate limits are recorded as failed cases. The assistant.evaluation CLI
+returns nonzero for any case failure. The paired assistant.benchmark CLI returns
+zero after writing a report even when cases fail or a provider-stop ends the run;
+inspect rows, completion and per-approach summaries. Consistency requires every
+planned repetition to be recorded once and pass; incomplete and unattempted
+cases are separate. One repeat establishes no repeated-run stability. Reference checks also run in CI and are
 uploaded as an artifact. No automatic live provider calls run in CI.
 
 ## Operational trace privacy
@@ -133,7 +156,10 @@ and token usage when the provider supplies it. Literals are removed before query
 fingerprinting. No prompt, message, schema text, raw SQL, SQL parameter, result,
 assumption, answer text, database URL, API key or raw exception is exported.
 Partial token totals are marked incomplete; unavailable usage is null. There is
-no fabricated cost metric or server-side trace collection. Session query
+no fabricated cost metric. Optional local operational aggregation is enabled
+with ASSISTANT_TELEMETRY_PATH; it stores sanitized counters, not full traces, and
+has no managed monitoring service or automatic retention. See the handover guide
+for its privacy boundary and connection-error aggregation limitation. Session query
 inspection intentionally contains actual SQL/results; it is distinct from the
 redacted operational export. CSV download is an explicit result export.
 

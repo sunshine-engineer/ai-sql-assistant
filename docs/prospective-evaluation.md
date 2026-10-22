@@ -2,6 +2,9 @@
 
 Outline: authorship, freeze, protocol, result interpretation and reproduction.
 
+This is the frozen 2026-10-21 protocol/result record. Current setup, operator
+configuration and transfer acceptance are in the [handover guide](HANDOVER.md).
+
 ## Authorship and selection
 
 The user approved a **prospective holdout with an explicit same-author limit**.
