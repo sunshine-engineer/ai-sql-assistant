@@ -1,4 +1,11 @@
+<!-- File: docs/engineering-validation.md | Purpose: Engineering validation and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Engineering feature validation
+
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
 
 Outline: implemented boundaries, measured evidence, reviewer artifacts and limits.
 

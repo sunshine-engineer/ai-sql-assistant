@@ -1,3 +1,8 @@
+-- File: sql_queries.sql
+-- Purpose: Bootstrap fresh PostgreSQL loader and read-only assistant roles as an administrator.
+-- Maintainer: sunshine-engineer
+-- Modified: 2026-10-23
+
 \set ON_ERROR_STOP on
 -- Bootstrap only: run as the database administrator, never as the assistant.
 -- Passwords are supplied interactively through psql, not stored in Git.

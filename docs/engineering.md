@@ -1,4 +1,9 @@
+<!-- File: docs/engineering.md | Purpose: Engineering and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Measured analytics engineering
+
+Start with the [handover and operations guide](HANDOVER.md) for configuration,
+acceptance, troubleshooting and document navigation.
 
 ## Review outline
 
@@ -27,8 +32,12 @@ literals, while identifiers and expressions come from code allowlists. Plans
 are inspected in the UI and always pass through `QueryService` validation and
 read-only execution. No model-supplied join expression can enter a compiled plan.
 
-Supported dimensions are region, category and month (customers support region).
-Filters are equality predicates. Date ranges are inclusive-start/exclusive-end
+Supported dimensions are region, category and month for ordinary sales metrics;
+customers support region only, and monthly growth supports region/category only.
+Filters are equality predicates with one value per dimension. Recognized
+conjunctions involving multiple values, disjunctions, exclusions and unsupported
+conditions cannot silently become a partial canonical plan; route to flexible
+SQL or clarification. The closed subset does not implement general NL parsing. Date ranges are inclusive-start/exclusive-end
 within the fixed fixture coverage. Unsupported grain, fields and metrics are
 rejected. Net-revenue monthly growth is supported for a complete current month and its
 covered previous month, rounded to four decimals with a NULL zero denominator.
@@ -87,7 +96,7 @@ Results include every attempted case, provider failures, latency, model/version,
 instance suite, split and repeat. SQL-suite pass means all three instances pass.
 The main pass score checks SQL/outcome, while answer faithfulness is separate.
 Repeated temperature-zero calls measure stability, not independent samples.
-The ten newly authored reserved questions are excluded from few-shot examples;
+The ten previously exposed reserved questions are regression cases;
 they are not a blind external benchmark and have regression tests. Do not tune
 against them and continue claiming independent held-out performance. Freeze a
 new independent split for subsequent model selection.
@@ -103,7 +112,11 @@ operational pilot, not a valid ranking of NL-to-SQL accuracy. Use **Benchmarks**
 See the published
 [measured report](benchmark-report.md) for successes **and failures**, and the
 [reliability follow-up](benchmark-reliability-status.md) for current fixes, recorded
-triage results and pending reruns. Optional `--synthetic-diagnostics path.json`
+triage results and completed reruns. The [prospective protocol](prospective-evaluation.md)
+records eight same-author questions frozen before their paired run. They are not
+an independently authored test set. Current reporting distinguishes complete,
+incomplete and unattempted cases; consistency requires every planned repetition
+to be present once and pass. Optional `--synthetic-diagnostics path.json`
 captures raw SQL/plans only for benchmark-owned synthetic fixtures; keep that
 separate from general reports. The CLI reads GROQ_API_KEY from its environment.
 
@@ -162,8 +175,9 @@ The package runs as a non-root user, binds to loopback, drops capabilities and
 uses a read-only root filesystem with bounded temporary data. It copies only
 application/fixture inputs, never local secrets. Reviewer mode rejects remote
 connections and arbitrary SQLite paths at the runtime boundary. No key is needed
-for Plan demo or reference evaluation. Container startup is not claimed as tested
-unless a working Docker daemon is available; see the validation report.
+for Plan demo or reference evaluation. Docker startup and real database checks
+have recorded validation evidence; consult the [handover acceptance status](HANDOVER.md#acceptance-and-transfer)
+for its source revision and any fresh-clone checks still required.
 
 A separate `ASSISTANT_DEPLOYMENT=hosted` mode uses Streamlit OIDC sign-in. It requires
 a verified email, an unexpired OIDC `exp` claim and operator-managed grants from local secrets, then selects only

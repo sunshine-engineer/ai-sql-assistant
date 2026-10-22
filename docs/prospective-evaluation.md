@@ -1,6 +1,11 @@
+<!-- File: docs/prospective-evaluation.md | Purpose: Prospective evaluation and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Prospective retail evaluation v1
 
 Outline: authorship, freeze, protocol, result interpretation and reproduction.
+
+This is the frozen 2026-10-21 protocol/result record. Current setup, operator
+configuration and transfer acceptance are in the [handover guide](HANDOVER.md).
 
 ## Authorship and selection
 

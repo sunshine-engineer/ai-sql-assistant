@@ -1,0 +1,15 @@
+# File: pyproject.toml
+# Purpose: Shared Python formatting, import ordering, and documentation checks.
+# Maintainer: sunshine-engineer
+# Modified: 2026-10-23
+[tool.ruff]
+required-version = "==0.14.3"
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E9", "F", "I", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
