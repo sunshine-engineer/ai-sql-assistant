@@ -1,0 +1,3440 @@
+{
+  "mode": "live_paired_benchmark",
+  "model": "qwen/qwen3.8-27b",
+  "prompt_version": "retail-analyst-v3-plans-budgets",
+  "timestamp": "2026-10-20T13:56:18.032253+00:00",
+  "split": "development",
+  "repeats": 1,
+  "suite_sha256": "9fa6c8f9ff537b340ad9eea10b3f2c162e56ad6d93f447717f29661254cc2d23",
+  "instance_version": "retail-instances-v1",
+  "instances": [
+    "base",
+    "skewed",
+    "zero_sales"
+  ],
+  "scope": "Same SQL executed across synthetic instances. Baseline has no answer-generation stage. Preflight shared. Repeats are not independent samples.",
+  "summary": {
+    "workflow": {
+      "passed": 21,
+      "total": 50,
+      "sql_suite_passed": 2,
+      "sql_total": 30,
+      "answer_verified": 1,
+      "answer_total": 1,
+      "consistent_cases": 21,
+      "cases": 50
+    },
+    "one_shot": {
+      "passed": 31,
+      "total": 50,
+      "sql_suite_passed": 11,
+      "sql_total": 30,
+      "answer_verified": 0,
+      "answer_total": 0,
+      "consistent_cases": 31,
+      "cases": 50
+    }
+  },
+  "rows": [
+    {
+      "id": "R01",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2335.8,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": true,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": {
+        "request_id": "07a4a3a5-39f1-463b-85d6-e2d783e57a99",
+        "started_at": "2026-10-20T13:54:15.954085+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "answered",
+        "duration_ms": 2328.9,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 7.05
+          },
+          {
+            "stage": "validate",
+            "elapsed_ms": 654.01
+          },
+          {
+            "stage": "execute",
+            "elapsed_ms": 654.92
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 656.48
+          },
+          {
+            "stage": "summarize",
+            "elapsed_ms": 2328.72
+          }
+        ],
+        "tool_calls": [
+          {
+            "tool": "query_database",
+            "query_fingerprint": "c973aee158d9acb9ea7f",
+            "validation": "passed",
+            "outcome": "succeeded",
+            "error_category": null,
+            "duration_ms": 2.79,
+            "row_count": 1,
+            "truncated": false
+          }
+        ],
+        "model_calls": [
+          {
+            "duration_ms": 643.21,
+            "outcome": "succeeded"
+          },
+          {
+            "duration_ms": 1672.22,
+            "outcome": "succeeded"
+          }
+        ],
+        "retries": 0,
+        "token_usage": {
+          "input_tokens": 3872,
+          "output_tokens": 101,
+          "total_tokens": 3973
+        },
+        "token_usage_complete": true,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 3973,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        },
+        "answer_validation": {
+          "status": "verified",
+          "reason": null,
+          "model_verified": true,
+          "displayed_verified": true,
+          "fact_count": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R01",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1883.6,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R02",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2170.22,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R02",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 3697.78,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": {
+        "request_id": "c3b3d1f4-d73c-4c91-8d6f-84251914702a",
+        "started_at": "2026-10-20T13:54:22.343564+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 3689.9,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.29
+          },
+          {
+            "stage": "validate",
+            "elapsed_ms": 2039.79
+          },
+          {
+            "stage": "execute",
+            "elapsed_ms": 2040.99
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 2042.43
+          }
+        ],
+        "tool_calls": [
+          {
+            "tool": "query_database",
+            "query_fingerprint": "e1316645cbbdc39ddbdb",
+            "validation": "passed",
+            "outcome": "succeeded",
+            "error_category": null,
+            "duration_ms": 3.12,
+            "row_count": 1,
+            "truncated": false
+          }
+        ],
+        "model_calls": [
+          {
+            "duration_ms": 2038.11,
+            "outcome": "succeeded"
+          },
+          {
+            "duration_ms": 1647.46,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": {
+          "input_tokens": 1866,
+          "output_tokens": 77,
+          "total_tokens": 1943
+        },
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 1943,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R03",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1984.5,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "35628ec1-22fd-40aa-99c9-178decc0c405",
+        "started_at": "2026-10-20T13:54:26.041339+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1984.42,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.28
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1984.14,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R03",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1992.8,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R04",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2186.52,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R04",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1814.52,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "eebe3162-7862-4070-a602-fe0208154af0",
+        "started_at": "2026-10-20T13:54:32.205180+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1814.43,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.35
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1814.07,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R05",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1998.59,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "3ce20af5-37a6-4f3c-98c3-5d3a08ab3244",
+        "started_at": "2026-10-20T13:54:34.019710+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1998.42,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.31
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1998.1,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R05",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1994.07,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R06",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2195.35,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R06",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1822.44,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "190c51f1-b3cc-4405-89a7-536a2d4f5090",
+        "started_at": "2026-10-20T13:54:40.207736+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1822.35,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.31
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1822.03,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R07",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2010.21,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "2b684a04-f2ce-4903-8732-8fcbeafc2948",
+        "started_at": "2026-10-20T13:54:42.030178+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2010.12,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.34
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2009.77,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R07",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1980.07,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R08",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2000.93,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R08",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2003.95,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "12a59882-f69a-4a78-a61e-8ff32040b281",
+        "started_at": "2026-10-20T13:54:48.021414+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2003.86,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.48
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2003.36,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R09",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2004.81,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "37c4b158-de74-40b5-a8af-f3740fc46273",
+        "started_at": "2026-10-20T13:54:50.025353+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2004.71,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.3
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2004.4,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R09",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2200.67,
+      "outcome": "answered",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": false,
+          "error": "result_mismatch"
+        },
+        {
+          "instance": "skewed",
+          "passed": false,
+          "error": "result_mismatch"
+        },
+        {
+          "instance": "zero_sales",
+          "passed": false,
+          "error": "result_mismatch"
+        }
+      ],
+      "trace": null,
+      "error": "query_or_outcome_mismatch"
+    },
+    {
+      "id": "R10",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1792.17,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R10",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2000.46,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "83ce0462-ed1a-4392-9c85-fccd8a26bd8a",
+        "started_at": "2026-10-20T13:54:56.023060+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2000.34,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.32
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1999.93,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R11",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2091.41,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "8c691d7c-d259-4ef8-8228-d7c2ea158d93",
+        "started_at": "2026-10-20T13:54:58.023556+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2091.12,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.34
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2090.75,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R11",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2189.63,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R12",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1712.69,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R12",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2006.94,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "a5884271-d8a4-41fd-83ca-c4e14600f981",
+        "started_at": "2026-10-20T13:55:04.017241+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2006.86,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.29
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2006.56,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R13",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2000.22,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "d3b8edb0-1a9a-4a95-8e0b-b0825c73e85c",
+        "started_at": "2026-10-20T13:55:06.024177+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2000.01,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.28
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1999.72,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R13",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2215.47,
+      "outcome": "answered",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": false,
+          "error": "result_mismatch"
+        },
+        {
+          "instance": "skewed",
+          "passed": false,
+          "error": "result_mismatch"
+        },
+        {
+          "instance": "zero_sales",
+          "passed": false,
+          "error": "result_mismatch"
+        }
+      ],
+      "trace": null,
+      "error": "query_or_outcome_mismatch"
+    },
+    {
+      "id": "R14",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1782.8,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R14",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2011.04,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "f15ccda0-3df4-44d3-919b-cdaec3f1db5b",
+        "started_at": "2026-10-20T13:55:12.022694+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2010.96,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.32
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2010.62,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R15",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1991.46,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "09a7e58c-663d-4563-8ebf-39f167f9405e",
+        "started_at": "2026-10-20T13:55:14.033746+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1991.35,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.35
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1990.99,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R15",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2239.74,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R16",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1757.48,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R16",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2052.6,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "f473167f-36b4-498a-9c02-9b20e82ca066",
+        "started_at": "2026-10-20T13:55:20.022427+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2052.47,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.32
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2052.14,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R17",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1953.94,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "6783d8b6-9494-4015-b9c7-e211964153fc",
+        "started_at": "2026-10-20T13:55:22.075023+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1953.86,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.29
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1953.56,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R17",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2320.94,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R18",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1694.45,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R18",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2012.62,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "7eefa726-d153-49d8-9d35-37967c1edea4",
+        "started_at": "2026-10-20T13:55:28.044412+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2012.5,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.61
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2011.87,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R19",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1975.44,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "558fa1f2-0d1c-42a4-a4bf-329e7b5023fc",
+        "started_at": "2026-10-20T13:55:30.057015+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1975.34,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.3
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1975.03,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R19",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2337.11,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R20",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1651.05,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R20",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2012.42,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "17442af6-95aa-41e7-8c62-832dbe2bd155",
+        "started_at": "2026-10-20T13:55:36.020648+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2012.25,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.4
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2011.84,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R21",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1999.5,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "6519311e-8396-40a8-b577-eae182b5a893",
+        "started_at": "2026-10-20T13:55:38.033055+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1999.42,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.32
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1999.09,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R21",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2176.25,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R22",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1813.9,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R22",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2017.96,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "a153654e-5f06-434e-9e24-88f464de7cd9",
+        "started_at": "2026-10-20T13:55:44.022746+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2017.87,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.31
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2017.55,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R23",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1987.12,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "9c5a98ff-70ee-4580-b375-4fe4625e44d2",
+        "started_at": "2026-10-20T13:55:46.040703+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1987.04,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.3
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1986.73,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R23",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2208.27,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R24",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1786.62,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R24",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2015.63,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "2cff37ee-c933-42ab-9ec4-58d14f432593",
+        "started_at": "2026-10-20T13:55:52.022728+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2015.55,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.32
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2015.22,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R25",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1989.55,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "d1760a1a-9d5b-4111-9cea-617a7f9b1042",
+        "started_at": "2026-10-20T13:55:54.038362+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1989.47,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.29
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1989.17,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R25",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2211.12,
+      "outcome": "answered",
+      "passed": true,
+      "sql_suite_passed": true,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R26",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1815.91,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R26",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1976.03,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "d66f60d5-74e4-43d1-a4f7-ef462daf4223",
+        "started_at": "2026-10-20T13:56:00.054978+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1975.94,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.29
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1975.64,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R27",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1992.84,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "fa1c80ba-f05b-4abb-a2d3-a530a3b6c532",
+        "started_at": "2026-10-20T13:56:02.031002+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1992.77,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.28
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1992.47,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R27",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2019.89,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R28",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2188.07,
+      "outcome": "answered",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "skewed",
+          "passed": true,
+          "error": null
+        },
+        {
+          "instance": "zero_sales",
+          "passed": false,
+          "error": "result_mismatch"
+        }
+      ],
+      "trace": null,
+      "error": "query_or_outcome_mismatch"
+    },
+    {
+      "id": "R28",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1800.98,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "b5e976b5-a18d-441d-b1e1-bc06ecdee6dc",
+        "started_at": "2026-10-20T13:56:08.231834+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1800.87,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.34
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1800.52,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R29",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 2020.94,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "280ba4fd-0ba5-487e-a02f-fb9be51601f9",
+        "started_at": "2026-10-20T13:56:10.032819+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 2020.84,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.36
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 2020.47,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R29",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 1974.52,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": "rate_limit"
+    },
+    {
+      "id": "R30",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "answered",
+      "duration_ms": 2412.99,
+      "outcome": "answered",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [
+        {
+          "instance": "base",
+          "passed": false,
+          "error": "execution_rejected_or_failed"
+        },
+        {
+          "instance": "skewed",
+          "passed": false,
+          "error": "execution_rejected_or_failed"
+        },
+        {
+          "instance": "zero_sales",
+          "passed": false,
+          "error": "execution_rejected_or_failed"
+        }
+      ],
+      "trace": null,
+      "error": "query_or_outcome_mismatch"
+    },
+    {
+      "id": "R30",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "answered",
+      "duration_ms": 1589.45,
+      "outcome": "failed",
+      "passed": false,
+      "sql_suite_passed": false,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "21cec09c-4f19-438e-b5b3-79a28bd9a62d",
+        "started_at": "2026-10-20T13:56:16.441278+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "failed",
+        "duration_ms": 1589.37,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "generate",
+            "elapsed_ms": 0.31
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [
+          {
+            "duration_ms": 1589.05,
+            "outcome": "failed",
+            "error_category": "rate_limit"
+          }
+        ],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": "rate_limit"
+    },
+    {
+      "id": "R31",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.11,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "c6475d67-1f0c-408c-b4a2-cfa42c0ad367",
+        "started_at": "2026-10-20T13:56:18.030734+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.06,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.06
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R31",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.03,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R32",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R32",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.04,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "9aaa19e0-cc92-4af2-8579-16a0be40853b",
+        "started_at": "2026-10-20T13:56:18.030878+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.03,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.03
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R33",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.04,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "10bc0daf-a63e-47bf-931e-6161144d17d3",
+        "started_at": "2026-10-20T13:56:18.030920+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.03,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.03
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R33",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R34",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R34",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.03,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "3f508609-0763-4368-be5f-59594261ffa2",
+        "started_at": "2026-10-20T13:56:18.031001+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.02,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.02
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R35",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "91a086ef-0259-461a-a96f-ea0272722169",
+        "started_at": "2026-10-20T13:56:18.031035+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.01,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.01
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R35",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R36",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R36",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.03,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "41edeb39-c042-4ed5-b5ed-df2bfb878082",
+        "started_at": "2026-10-20T13:56:18.031099+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.02,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.02
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R37",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.04,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "00917a2c-d943-4f19-ad99-cbf09dec3e49",
+        "started_at": "2026-10-20T13:56:18.031134+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.03,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.03
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R37",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R38",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.02,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R38",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "clarify",
+      "duration_ms": 0.03,
+      "outcome": "clarify",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "0eb93bb4-2f5e-4d82-8e9b-605afc1a393e",
+        "started_at": "2026-10-20T13:56:18.031210+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "clarify",
+        "duration_ms": 0.02,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "clarify",
+            "elapsed_ms": 0.02
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R39",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "refused",
+      "duration_ms": 0.01,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "803c9a38-8042-4938-bee8-1f60615662b2",
+        "started_at": "2026-10-20T13:56:18.031243+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "refused",
+        "duration_ms": 0.0,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R39",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "refused",
+      "duration_ms": 0.0,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R40",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "refused",
+      "duration_ms": 0.0,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R40",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "refused",
+      "duration_ms": 0.01,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "2f9496f1-d308-4701-ace6-94959309682f",
+        "started_at": "2026-10-20T13:56:18.031263+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "refused",
+        "duration_ms": 0.0,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R41",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "refused",
+      "duration_ms": 0.01,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "170023fa-7441-435a-bd96-a88248d71a2e",
+        "started_at": "2026-10-20T13:56:18.031278+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "refused",
+        "duration_ms": 0.0,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R41",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "refused",
+      "duration_ms": 0.0,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R42",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "refused",
+      "duration_ms": 0.0,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R42",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "refused",
+      "duration_ms": 0.01,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "51794002-861f-4321-b2b7-7c012bc2692d",
+        "started_at": "2026-10-20T13:56:18.031295+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "refused",
+        "duration_ms": 0.0,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R43",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "refused",
+      "duration_ms": 0.01,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "c81635bd-2874-4065-a521-b525f1354daf",
+        "started_at": "2026-10-20T13:56:18.031307+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "refused",
+        "duration_ms": 0.0,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R43",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "refused",
+      "duration_ms": 0.0,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R44",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "refused",
+      "duration_ms": 0.0,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R44",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "refused",
+      "duration_ms": 0.01,
+      "outcome": "refused",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "0154ef6c-55da-4e6c-9636-9221536ccb62",
+        "started_at": "2026-10-20T13:56:18.031324+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "refused",
+        "duration_ms": 0.0,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R45",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.04,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "0a364ca4-58e8-461d-80ec-025470cab9ea",
+        "started_at": "2026-10-20T13:56:18.031335+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "unsupported",
+        "duration_ms": 0.03,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "summarize",
+            "elapsed_ms": 0.03
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R45",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.02,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R46",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.02,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R46",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.03,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "a1183e3a-fa9d-4abc-a67b-f6c1dc3fc24c",
+        "started_at": "2026-10-20T13:56:18.031420+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "unsupported",
+        "duration_ms": 0.02,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "summarize",
+            "elapsed_ms": 0.02
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R47",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.03,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "593acd0b-2709-430b-8f0c-d4f71ca0bd90",
+        "started_at": "2026-10-20T13:56:18.031453+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "unsupported",
+        "duration_ms": 0.02,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "summarize",
+            "elapsed_ms": 0.02
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R47",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.09,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R48",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.02,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R48",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.04,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "003539b9-d85e-466b-b8b5-c2500a9a7add",
+        "started_at": "2026-10-20T13:56:18.031609+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "unsupported",
+        "duration_ms": 0.02,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "summarize",
+            "elapsed_ms": 0.02
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R49",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.04,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "eabae325-2fcd-41f0-9f64-966e581b0654",
+        "started_at": "2026-10-20T13:56:18.031646+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "unsupported",
+        "duration_ms": 0.03,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "summarize",
+            "elapsed_ms": 0.03
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "R49",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.02,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R50",
+      "split": "development",
+      "repeat": 1,
+      "approach": "one_shot",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.02,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": null,
+      "error": null
+    },
+    {
+      "id": "R50",
+      "split": "development",
+      "repeat": 1,
+      "approach": "workflow",
+      "expected_outcome": "unsupported",
+      "duration_ms": 0.05,
+      "outcome": "unsupported",
+      "passed": true,
+      "sql_suite_passed": null,
+      "answer_verified": null,
+      "instances": [],
+      "trace": {
+        "request_id": "fd14df9b-8f19-45be-bc7e-c797db60db87",
+        "started_at": "2026-10-20T13:56:18.031750+00:00",
+        "prompt_version": "retail-analyst-v3-plans-budgets",
+        "model": "qwen/qwen3.8-27b",
+        "outcome": "unsupported",
+        "duration_ms": 0.03,
+        "stages": [
+          {
+            "stage": "understand",
+            "elapsed_ms": 0.0
+          },
+          {
+            "stage": "summarize",
+            "elapsed_ms": 0.03
+          }
+        ],
+        "tool_calls": [],
+        "model_calls": [],
+        "retries": 0,
+        "token_usage": null,
+        "token_usage_complete": false,
+        "budget": {
+          "seconds_limit": 60,
+          "tokens_limit": 60000,
+          "accounted_tokens": 0,
+          "accounting": "provider_usage_when_available_otherwise_reserved_bytes"
+        }
+      },
+      "error": null
+    }
+  ]
+}

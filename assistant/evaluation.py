@@ -10,6 +10,7 @@ from statistics import median
 from time import perf_counter
 
 from .business import preflight
+from .budgets import RequestBudget
 from .config import DEFAULT_DATABASE, DEFAULT_MODEL
 from .connections import open_engine
 from .demo import build_demo, TABLES, DEMO_VERSION, AS_OF_DATE
@@ -60,32 +61,57 @@ def evaluate(service, model=None, cases=None):
     for case in cases if cases is not None else load_cases():
         started = perf_counter()
         trace = None
+        query_passed = answer_passed = displayed_passed = None
         try:
             if model is None:
                 if case['expected_outcome'] == 'answered':
                     result = service.query(case['gold_sql'])
-                    passed = same_results(result, case)
+                    query_passed = same_results(result, case)
+                    passed = query_passed
                 else:
                     decision = preflight(case['question'])
                     passed = decision is not None and decision[0] == case['expected_outcome']
                 outcome = case['expected_outcome'] if passed else 'mismatch'
             else:
-                report = run_workflow(model, service, [{'role': 'user', 'content': case['question']}])
+                report = run_workflow(model, service, [{'role': 'user', 'content': case['question']}], budget=RequestBudget())
                 outcome, trace = report.outcome, report.trace
                 passed = outcome == case['expected_outcome']
                 if case['expected_outcome'] == 'answered':
-                    passed = passed and same_results(report.result, case)
-            error = None if passed else 'outcome_or_result_mismatch'
+                    query_passed = same_results(report.result, case)
+                    answer_passed = report.answer_validation.get('model_verified', False)
+                    displayed_passed = report.answer_validation.get('displayed_verified', False)
+                    passed = passed and query_passed and answer_passed
+            if passed:
+                error = None
+            elif outcome != case['expected_outcome']:
+                error = 'outcome_mismatch'
+            elif query_passed is False:
+                error = 'sql_result_mismatch'
+            elif answer_passed is False:
+                error = 'answer_not_faithful'
+            else:
+                error = 'reference_mismatch'
         except Exception:
             passed, outcome, error = False, 'failed', 'evaluation_error'
+            if case['expected_outcome'] == 'answered':
+                query_passed = False
+                if model is not None:
+                    answer_passed = displayed_passed = False
         outcomes.append({'id': case['id'], 'category': case['category'],
                          'expected_outcome': case['expected_outcome'], 'outcome': outcome,
                          'passed': passed, 'error': error,
+                         'query_passed': query_passed, 'answer_passed': answer_passed,
+                         'displayed_answer_passed': displayed_passed,
                          'duration_ms': round((perf_counter()-started)*1000, 2), 'trace': trace})
     metrics = {}
     for kind in ['answered', 'clarify', 'refused', 'unsupported']:
         selected = [r for r in outcomes if r['expected_outcome'] == kind]
         metrics[kind] = {'passed': sum(r['passed'] for r in selected), 'total': len(selected)}
+    quality = {}
+    for label, field in [('query_results', 'query_passed'), ('model_answer_faithfulness', 'answer_passed'),
+                         ('displayed_answer_faithfulness', 'displayed_answer_passed')]:
+        values = [row[field] for row in outcomes if row[field] is not None]
+        quality[label] = {'passed': sum(values), 'total': len(values)}
     latencies = sorted(row['duration_ms'] for row in outcomes)
     traces = [row['trace'] for row in outcomes if row['trace']]
     return {'mode': mode, 'dataset_version': DEMO_VERSION, 'as_of_date': AS_OF_DATE,
@@ -94,7 +120,8 @@ def evaluate(service, model=None, cases=None):
             'model': model_identifier(model) if model is not None else None,
             'model_calls': sum(len(t['model_calls']) for t in traces),
             'sql_repairs': sum(t['retries'] for t in traces),
-            'scope': 'Synthetic SQLite retail fixture; excludes live remote databases and answer-prose grading.',
+            'scope': 'Synthetic SQLite retail fixture. Live mode separately checks query results and result-referenced answer facts; excludes SQL semantic proof and unrestricted prose grading.',
+            'evaluation_version': 'v2-answer-facts', 'quality_metrics': quality,
             'metrics': metrics, 'categories': dict(Counter(r['category'] for r in outcomes)),
             'latency_ms': {'p50': median(latencies) if latencies else None,
                            'p95': latencies[max(0, math.ceil(len(latencies)*.95)-1)] if latencies else None},

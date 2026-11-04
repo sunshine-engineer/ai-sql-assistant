@@ -168,15 +168,28 @@ execute → summarize**. Read-only policy rejections stop immediately; recoverab
 SQL errors permit at most two repairs within the four-tool-call/five-round budget.
 Charts use returned numeric columns directly and skip ambiguous/duplicate chart
 axes rather than inventing aggregations. Monetary columns remain in cents.
-Model summaries and assumptions are displayed for inspection, not certified as
-correct; result-based evaluation does not grade answer prose.
+Final answers contain facts checked against executed result cells, with references
+such as `[q1:r0:c0]`. Invalid model answers receive a cited fallback and fail the
+model-answer evaluation score. Assumptions still require inspection: matching
+cells does not prove business semantics or answer completeness. Comparisons with
+extra instructions ask clarification before execution.
 
 See [the analytics design and evaluation guide](docs/analytics.md) for contracts,
 limitations, operational traces and commands.
 
+## Engineering evidence
+
+Start with **Plan demo** for a key-free walkthrough using real controlled SQL.
+See [the engineering guide](docs/engineering.md) for canonical analysis plans,
+three-instance SQL evaluation, repeated paired live benchmarks, budgets, metadata
+selection, sanitized operational aggregates, and hosted access configuration.
+[Measured benchmark results](docs/benchmark-report.md) include failures and quota
+limitations. [Current screenshots and walkthrough](assets/current/README.md) show
+real controlled execution without a provider key. [Validation scope](docs/engineering-validation.md)
+distinguishes local tests, live measurements and infrastructure still unverified. Run `docker compose up --build` for the synthetic-only reviewer package.
+
 ## Future Improvements
-- Authentication and per-user database authorization
-- Docker deployment
+- Validate OIDC, per-user DB grants and certificate verification in hosted infrastructure
 - Larger held-out and cross-dialect model evaluation
 - Domain contracts for user-supplied schemas
 

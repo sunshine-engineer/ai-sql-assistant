@@ -1,4 +1,5 @@
 """Streamlit composition: collect settings, manage the chat, render responses."""
+import os
 import streamlit as st
 
 from .chat import reset_for_database
@@ -6,10 +7,33 @@ from .config import AppConfig, DEFAULT_DATABASE, DEFAULT_MODEL
 from .presentation import submit_turn, render_report
 from .business import CONTRACT
 from .runtime import application_session
+from .budgets import BudgetExceeded
 
 
 def read_sidebar() -> AppConfig:
-    kind = st.sidebar.radio('Database', ['sqlite', 'mysql', 'postgres'])
+    if os.environ.get('ASSISTANT_DEPLOYMENT') == 'hosted':
+        from .access import hosted_config
+        if not getattr(st.user, 'is_logged_in', False):
+            st.sidebar.button('Sign in', on_click=st.login)
+            st.info('Sign in to access your approved database views.')
+            st.stop()
+        try:
+            principal = {**dict(st.user), 'is_logged_in':True}
+            grants = st.secrets.to_dict().get('database_access', {})
+            config = hosted_config(principal, grants, st.secrets['provider']['api_key'],
+                                   st.secrets['provider'].get('model', DEFAULT_MODEL))
+        except (KeyError, PermissionError):
+            st.error('No current approved database access is configured for this identity.')
+            st.sidebar.button('Sign out', on_click=st.logout)
+            st.stop()
+        reset_for_database(st.session_state, config.database_identity,
+                           clear=st.sidebar.button('Clear message history'))
+        st.sidebar.button('Sign out', on_click=st.logout)
+        return config
+    reviewer = os.environ.get('ASSISTANT_DEPLOYMENT') == 'reviewer'
+    kind = st.sidebar.radio('Database', ['sqlite'] if reviewer else ['sqlite', 'mysql', 'postgres'])
+    if reviewer:
+        st.sidebar.caption('Reviewer mode: bundled synthetic data only.')
     settings = {}
     schema = None
     if kind == 'sqlite':
@@ -26,6 +50,9 @@ def read_sidebar() -> AppConfig:
         settings['database'] = st.sidebar.text_input('Database name')
         if kind == 'postgres':
             schema = st.sidebar.text_input('Approved schema', value='genai')
+        tls_ca = st.sidebar.text_input('Trusted CA certificate path (optional for local use)')
+        if tls_ca:
+            settings['tls_ca'] = tls_ca
         st.sidebar.caption('Use a dedicated SELECT-only account, never the data-loading account.')
     config = AppConfig(kind=kind, settings=settings, schema=schema)
     reset_for_database(
@@ -49,7 +76,15 @@ def main():
     st.set_page_config(page_title='AI SQL Assistant', page_icon='🤖', layout='wide')
     st.title('🤖 AI SQL Assistant')
     st.caption('Ask questions about approved tables. Responses appear after processing.')
-    workspace = st.sidebar.selectbox('Workspace', ['Chat', 'Evaluation'])
+    workspace = st.sidebar.selectbox('Workspace', ['Chat', 'Evaluation', 'Plan demo', 'Benchmarks'])
+    if workspace == 'Benchmarks':
+        from .benchmark_ui import render_benchmarks
+        render_benchmarks(st)
+        return
+    if workspace == 'Plan demo':
+        from .demo_ui import render_demo
+        render_demo()
+        return
     if workspace == 'Evaluation':
         from .evaluation_ui import render_evaluation
         render_evaluation(st)
@@ -73,5 +108,7 @@ def main():
                     st, model, service, st.session_state.messages, question,
                     context=st.session_state.get('analysis_context'),
                 )
+    except BudgetExceeded:
+        st.warning('Request time budget reached during setup. Select a smaller approved schema and retry.')
     except Exception:
         st.error('Connection setup failed. Check the database, driver, schema and model settings.')

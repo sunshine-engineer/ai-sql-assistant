@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from pathlib import Path
 
-DEFAULT_MODEL = 'qwen/qwen3.6-27b'
+DEFAULT_MODEL = 'qwen/qwen3.8-27b'
 DEFAULT_DATABASE = Path(__file__).resolve().parent.parent / 'data' / 'retail-v1.db'
 
 
@@ -13,6 +13,9 @@ class AppConfig:
     schema: str | None = None
     api_key: str = field(default='', repr=False)
     model_name: str = DEFAULT_MODEL
+    approved_columns: dict | None = None
+    principal: str | None = field(default=None, repr=False)
+    hosted: bool = False
 
     @property
     def ready(self) -> bool:
@@ -21,4 +24,7 @@ class AppConfig:
     @property
     def database_identity(self) -> list:
         """Used only for the session fingerprint; never sent to the model."""
-        return [self.kind, self.settings, self.schema]
+        identity = [self.kind, self.settings, self.schema]
+        if self.principal or self.approved_columns:
+            identity += [self.principal, self.approved_columns]
+        return identity

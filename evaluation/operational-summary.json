@@ -1,0 +1,19 @@
+{
+  "requests": 86,
+  "outcomes": {
+    "answered": 17,
+    "failed": 43,
+    "clarify": 10,
+    "refused": 10,
+    "unsupported": 6
+  },
+  "provider_errors": {
+    "rate_limit": 43
+  },
+  "measured_tokens": 69641,
+  "requests_with_complete_usage": 19,
+  "retries": 0,
+  "tool_calls": 22,
+  "duration_ms_mean": 7847.330348837209,
+  "scope": "Published benchmark traces only. Initial baseline runs lack traces; reported tokens are incomplete, not total billed usage."
+}

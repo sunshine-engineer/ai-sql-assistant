@@ -1,5 +1,5 @@
 psycopg[binary]==3.3.4
-streamlit==1.60
+streamlit[auth]==1.60
 langchain-core==1.6.12
 langchain-groq==1.1.3
 groq==0.37.1
@@ -7,3 +7,4 @@ sqlalchemy==2.0.51
 mysql-connector-python==9.7.0
 sqlglot==28.10.1
 pandas==3.0.6
+Authlib==1.9.1

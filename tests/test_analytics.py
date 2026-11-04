@@ -16,15 +16,6 @@ from assistant.generation import run_workflow
 from assistant.tracing import query_fingerprint, model_identifier
 
 
-@pytest.fixture
-def retail(tmp_path):
-    path = build_demo(tmp_path / 'retail.db')
-    engine = open_engine('sqlite', path=path)
-    service = QueryService(engine, tables=TABLES)
-    service.retail = True
-    yield service
-    engine.dispose()
-
 
 def call(sql, assumptions=None):
     return AIMessage(content='', tool_calls=[{'id': 'q1', 'name': 'query_database',
@@ -73,8 +64,8 @@ def test_result_grading_uses_rows_not_sql_or_aliases():
 
 def test_live_evaluation_detects_wrong_executed_results(retail):
     case = load_cases()[0]
-    good = evaluate(retail, provider(call(case['gold_sql']), AIMessage(content='12')), [case])
-    bad = evaluate(retail, provider(call('SELECT 99 AS customers'), AIMessage(content='12')), [case])
+    good = evaluate(retail, provider(call(case['gold_sql']), AIMessage(content=json.dumps({'facts':[{'result_id':'q1','row':0,'column':0,'value':12}]}))), [case])
+    bad = evaluate(retail, provider(call('SELECT 99 AS customers'), AIMessage(content=json.dumps({'facts':[{'result_id':'q1','row':0,'column':0,'value':12}]}))), [case])
     assert good['mode'] == 'live_model' and good['cases'][0]['passed']
     assert not bad['cases'][0]['passed']  # Correct prose cannot hide a wrong executed result.
 

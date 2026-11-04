@@ -11,7 +11,7 @@ from .runtime import application_session
 
 def render_evaluation(st):
     st.subheader('Retail evaluation: 50 curated cases')
-    st.write('Reference checks validate frozen expected results and deterministic controls. Only live model runs measure generated-query result accuracy. Neither grades answer prose or remote databases.')
+    st.write('Reference checks validate frozen expected results and deterministic controls. Live runs separately measure generated-query results and result-referenced answer facts. Unrestricted prose and remote database model quality are not graded.')
     cases = load_cases()
     st.dataframe(pd.DataFrame([{k: c[k] for k in ['id', 'category', 'question', 'expected_outcome']} for c in cases]), hide_index=True)
     mode = st.radio('Evaluation mode', ['Reference fixture checks (offline)', 'Live Groq model'])
@@ -46,8 +46,11 @@ def render_evaluation(st):
     if report:
         st.info('Mode: ' + report['mode'] + '. Results below describe only this selected batch.')
         for kind, metric in report['metrics'].items():
-            label = 'Result accuracy' if report['mode'] == 'live_model' and kind == 'answered' else kind
+            label = 'End-to-end answers' if report['mode'] == 'live_model' and kind == 'answered' else kind
             st.metric(label, f"{metric['passed']} / {metric['total']}")
+        for label, metric in report.get('quality_metrics', {}).items():
+            value = f"{metric['passed']} / {metric['total']}" if metric['total'] else 'Not evaluated'
+            st.metric(label.replace('_', ' ').capitalize(), value)
         st.write('Latency in milliseconds', report['latency_ms'])
         st.write('Observed provider calls:', report['model_calls'], 'SQL repairs:', report['sql_repairs'])
         table = pd.DataFrame([{k: v for k, v in row.items() if k != 'trace'} for row in report['cases']])

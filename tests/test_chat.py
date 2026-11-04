@@ -43,8 +43,12 @@ def test_followup_context_and_controlled_execution():
     messages = [{'role': 'user', 'content': 'Count students'},
                 {'role': 'assistant', 'content': 'Three'},
                 {'role': 'user', 'content': 'How many scored above 80?'}]
-    assert answer_question(model, service, messages) == 'Three students.'
-    service.query.assert_called_once_with('SELECT COUNT(*) FROM students')
+    answer = answer_question(model, service, messages)
+    assert 'count: 3 [q1:r0:c0]' in answer
+    assert 'could not be verified' in answer
+    service.query.assert_called_once()
+    assert service.query.call_args.args == ('SELECT COUNT(*) FROM students',)
+    assert 0 < service.query.call_args.kwargs['timeout_ms'] <= 60000
     history = bound.invoke.call_args.args[0]
     assert any(isinstance(m, HumanMessage) and m.content == 'Count students' for m in history)
     assert any(isinstance(m, ToolMessage) and m.tool_call_id == 'call1' for m in history)
@@ -119,7 +123,8 @@ def test_real_sqlite_through_model_tool_boundary(tmp_path):
             tool_reply('SELECT COUNT(*) FROM students'),
             AIMessage(content='Two students; no changes made.'),
         ]
-        assert answer_question(model, service, []) == 'Two students; no changes made.'
+        answer = answer_question(model, service, [])
+        assert ': 2 [q2:r0:c0]' in answer
         history = model.bind_tools.return_value.invoke.call_args.args[0]
         results = [m.content for m in history if isinstance(m, ToolMessage)]
         assert 'unknown_column' in results[0]

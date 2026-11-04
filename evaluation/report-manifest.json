@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-20",
+  "model": "qwen/qwen3.8-27b",
+  "runs": [
+    {
+      "path": "evaluation/reports/2026-10-20-development.json",
+      "sha256": "b40530970a0f949879d88a6cc037d349ee8550dbb61b88151e3631209d3197a9",
+      "interval_seconds": 2,
+      "snapshot_note": "Run captured during implementation, before final code review; original unmodified report retained.",
+      "known_limitations": [
+        "Synthetic data only",
+        "Temperature-zero repeats are not independent",
+        "Newly authored reserved prompts are not a blind external benchmark"
+      ]
+    },
+    {
+      "path": "evaluation/reports/2026-10-20-heldout.json",
+      "sha256": "7f3fd75d7c2f117a3c357ef9906bcdaf2a06c28834bc699a3341bb723787767a",
+      "interval_seconds": 8,
+      "snapshot_note": "Run captured during implementation, before final code review; original unmodified report retained.",
+      "known_limitations": [
+        "Synthetic data only",
+        "Temperature-zero repeats are not independent",
+        "Newly authored reserved prompts are not a blind external benchmark",
+        "H08 reference NOT EXISTS was rejected by the then-current validator; do not interpret its initial failure as model accuracy."
+      ]
+    },
+    {
+      "path": "evaluation/reports/2026-10-20-paced-pilot.json",
+      "sha256": "0fb9c8993b0399d25727db402f9137911bec873891d4bfad61256062ab6d1780",
+      "interval_seconds": 18,
+      "snapshot_note": "Run captured during implementation, before final code review; original unmodified report retained.",
+      "known_limitations": [
+        "Synthetic data only",
+        "Temperature-zero repeats are not independent",
+        "Newly authored reserved prompts are not a blind external benchmark"
+      ]
+    }
+  ],
+  "reporting_notes": [
+    "Primary pass combines expected outcome and all-instance SQL correctness. Answer verification is separate.",
+    "Earlier baseline calls have no exported trace; aggregate token counts are incomplete and are not total billed usage.",
+    "The paced pilot covers only H01-H04, chosen before its run, after the larger quota-constrained run."
+  ]
+}
