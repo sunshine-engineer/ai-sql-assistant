@@ -45,7 +45,8 @@ def test_correct_sql_with_contradictory_answer_fails_separate_quality_grade(reta
     report = run_workflow(provider(case['gold_sql'], candidate), retail, [{'role':'user','content':case['question']}])
     assert '999' not in report.answer and '12 [q1:r0:c0]' in report.answer
     assert report.facts == [{'result_id':'q1','row':0,'column':0,'value':12}]
-    assert '999' not in json.dumps(report.trace)
+    assert candidate not in json.dumps(report.trace)  # UUID/timing digits can legitimately contain 999.
+    assert not {'facts','rows','content','sql'} & set(report.trace)
 
 
 def test_correct_structured_answer_passes_sql_and_faithfulness(retail):

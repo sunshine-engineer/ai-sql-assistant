@@ -9,7 +9,7 @@ from uuid import uuid4
 import sqlglot
 from sqlglot import exp
 
-PROMPT_VERSION = 'retail-analyst-v3-plans-budgets'
+PROMPT_VERSION = 'retail-analyst-v4-terminal-plans'
 
 
 def query_fingerprint(sql, dialect):

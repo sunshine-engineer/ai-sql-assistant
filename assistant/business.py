@@ -5,6 +5,7 @@ from .dates import requested_dates
 
 CONTRACT = {
     'version': DEMO_VERSION,
+    'semantics_version':'retail-semantics-v2',
     'as_of_date': AS_OF_DATE,
     'currency': 'USD cents (integer amounts; divide by 100 only when explicitly labeling dollars)',
     'grain': {'sales_facts': 'one order item; safe starting point for revenue analytics',
@@ -15,7 +16,9 @@ CONTRACT = {
         'net_revenue': 'SUM(sales_facts.net_revenue_cents); gross less refunds; refunds recognized in original order month',
         'units': 'SUM(quantity) WHERE status = completed',
         'orders': 'COUNT(DISTINCT order_id) WHERE status = completed',
-        'growth': '(current-prior)/prior; undefined when prior is zero; specify metric and periods',
+        'growth': '(current-prior)/prior; undefined when prior is zero; specify metric and periods. Canonical net_revenue_growth_ratio compares the selected calendar month with its previous month, rounded to 4 decimals.',
+        'refund_rate':'SUM(sales_facts.refund_cents) * 1.0 / NULLIF(SUM(sales_facts.gross_sales_cents),0). Gross already excludes cancelled sales; include all recorded refunds, without another completed-status filter.',
+        'category_refunds':'Group sales_facts by category and SUM(refund_cents), including represented categories with zero refunds. Do not drop zero-refund categories unless explicitly requested.',
         'target_attainment': 'monthly category net revenue / target_cents; aggregate facts BEFORE joining targets',
     },
     'approved_joins': [

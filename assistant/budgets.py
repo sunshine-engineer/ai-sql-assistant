@@ -2,6 +2,7 @@
 from dataclasses import dataclass, field
 import json
 import time
+from groq import APIConnectionError
 
 
 class BudgetExceeded(RuntimeError):
@@ -62,6 +63,8 @@ def provider_error(exc):
         return 'model_or_request'
     if isinstance(exc, TimeoutError) or 'timeout' in type(exc).__name__.lower():
         return 'provider_timeout'
+    if isinstance(exc, (ConnectionError, APIConnectionError)):
+        return 'provider_connection'
     if status and isinstance(status, int) and status >= 500:
         return 'provider_unavailable'
     return 'provider_error'

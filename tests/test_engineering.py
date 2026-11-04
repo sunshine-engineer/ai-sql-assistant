@@ -84,7 +84,9 @@ def test_plan_tool_uses_canonical_sql_and_references(retail):
       AIMessage(content='',tool_calls=[{'name':'execute_analysis_plan','args':{'metric':'customers','grain':'customer','dimensions':[],'filters':{},'date_range':None},'id':'p1'}]),
       AIMessage(content=json.dumps({'facts':[{'result_id':'q1','row':0,'column':0,'value':12}]}))]
     report=run_workflow(model,retail,[{'role':'user','content':'How many customers?'}])
-    assert report.outcome=='answered' and report.answer_validation['model_verified']
+    assert report.outcome=='answered' and report.answer_validation['displayed_verified']
+    assert report.answer_validation['method']=='canonical_plan'
+    assert model.bind_tools.return_value.invoke.call_count==1
     assert report.attempts[0]['plan']['grain']=='customer'
     assert 'COUNT(*)' in report.attempts[0]['sql']
 
@@ -232,7 +234,7 @@ def test_canonical_empty_sum_preserves_null(retail):
 
 def test_reference_execution_failure_has_distinct_category(instances):
     outcomes=grade_sql('SELECT 1',instances,{'gold_sql':'SELECT secret FROM nonexistent'})
-    assert all(row['error']=='reference_execution_failed' for row in outcomes)
+    assert all(row['error']=='reference_policy_rejection' for row in outcomes)
 
 
 @pytest.mark.parametrize('dialect',['sqlite','postgres','mysql'])

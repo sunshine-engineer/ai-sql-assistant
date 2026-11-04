@@ -131,3 +131,22 @@ def test_frozen_live_benchmark_dashboard_without_credentials():
     assert any('quota-constrained' in warning.value for warning in app.warning)
     assert not app.text_input
     assert len(app.dataframe)>=2
+
+
+def test_canonical_chat_finishes_without_second_model_call(monkeypatch):
+    model=Mock(model_name='fixture/provider')
+    model.bind_tools.return_value.invoke.side_effect=[
+        AIMessage(content='',tool_calls=[{'name':'execute_analysis_plan','args':{
+            'metric':'net_revenue_cents','grain':'item','dimensions':[],
+            'filters':{'region':'South'},'date_range':['2026-03-01','2026-04-01']},'id':'plan'}]),
+        RuntimeError('unnecessary summarizer would fail'),
+    ]
+    monkeypatch.setattr('langchain_groq.ChatGroq',lambda **kwargs:model)
+    app=AppTest.from_file('app.py').run()
+    app.sidebar.text_input[0].set_value('offline-test-key').run()
+    app.chat_input[0].set_value('Give March 2026 net revenue in cents for South.').run()
+    assert not app.exception
+    assert app.dataframe[-1].value.columns.tolist()==['net_revenue_cents']
+    report=app.session_state['messages'][-1]['report']
+    assert report['answer_validation']['method']=='canonical_plan'
+    assert model.bind_tools.return_value.invoke.call_count==1

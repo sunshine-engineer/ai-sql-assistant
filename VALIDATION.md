@@ -2,6 +2,11 @@
 
 Outline: scope, executed checks, issue coverage, remaining integration checks.
 
+**2026-10-21 follow-up:** real PostgreSQL/MySQL integration is now verified; all
+351 tests passed with both database endpoints enabled. See the
+[current reliability record](docs/benchmark-reliability-status.md) for live-model
+confirmations and Docker verification. The historical results below are retained.
+
 ## Scope
 
 Branch: `fix/sql-safety-and-chat`, based on `84bcc3e`.

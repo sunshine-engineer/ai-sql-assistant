@@ -157,7 +157,7 @@
     {
       "id": "R09",
       "category": "aggregation",
-      "question": "Show net revenue in cents by region, including unknown regions.",
+      "question": "Show net revenue in cents by region, labelling missing regions as 'Unknown'. Order the displayed region labels alphabetically.",
       "expected_outcome": "answered",
       "gold_sql": "SELECT COALESCE(region,'Unknown') AS region, SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts GROUP BY region ORDER BY region",
       "columns": [
@@ -307,7 +307,7 @@
     {
       "id": "R13",
       "category": "joins",
-      "question": "Which products have never been ordered?",
+      "question": "Which products have never been ordered? Return only product_name, ordered alphabetically.",
       "expected_outcome": "answered",
       "gold_sql": "SELECT p.product_name FROM products p LEFT JOIN order_items i ON p.product_id=i.product_id WHERE i.item_id IS NULL ORDER BY p.product_name",
       "columns": [
@@ -616,9 +616,9 @@
     {
       "id": "R28",
       "category": "joins",
-      "question": "Show refund cents by product category without multiplying refund events.",
+      "question": "Show refund cents by product category without multiplying refund events. Include all categories represented in sales_facts even when refunds are zero; order by category.",
       "expected_outcome": "answered",
-      "gold_sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts WHERE refund_cents > 0 GROUP BY category ORDER BY category",
+      "gold_sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category",
       "columns": [
         "category",
         "refund_cents"
@@ -889,5 +889,6 @@
       "question": "What is the gross margin by category?",
       "expected_outcome": "unsupported"
     }
-  ]
+  ],
+  "case_contract_version": "retail-questions-v3"
 }

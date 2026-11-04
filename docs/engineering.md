@@ -30,15 +30,20 @@ read-only execution. No model-supplied join expression can enter a compiled plan
 Supported dimensions are region, category and month (customers support region).
 Filters are equality predicates. Date ranges are inclusive-start/exclusive-end
 within the fixed fixture coverage. Unsupported grain, fields and metrics are
-rejected. Growth, targets, arbitrary expressions, complex filters and unrelated
-schemas continue to use flexible SQL; canonical analytical meaning is **not**
+rejected. Net-revenue monthly growth is supported for a complete current month and its
+covered previous month, rounded to four decimals with a NULL zero denominator.
+Targets, other growth definitions, arbitrary expressions, complex filters and
+unrelated schemas continue to use flexible SQL; canonical analytical meaning is **not**
 guaranteed for that path. Retail raw refund joins are explicitly rejected at
 preview and execution, including joined subqueries; use `sales_facts` instead.
 This intentionally conservative rule can reject otherwise legitimate queries.
 
-The model can still choose the wrong metric/filter. A valid plan proves supported
-compilation, not that the plan captured the user's intent. Inspect proposed plans
-and compare execution results to references.
+Explicit supported metric, filter, grouping and calendar-month constraints are
+checked before plan execution, with bounded repairs for mismatches. This narrow
+recognizer is not general intent verification. Inspect proposed plans and compare
+results to references. A single successful canonical-plan call renders result-backed
+facts directly, avoiding a second model summarization call. Deterministic displayed
+answers and verified model-generated answers have separate evaluation counts.
 
 ## Multiple data instances
 
@@ -63,8 +68,8 @@ it does not implement that repository's distilled test-suite algorithm.
 
 ```bash
 export GROQ_API_KEY=...  # configure locally; never commit the key
-python -m assistant.benchmark --split development --limit 50 --repeats 1 --interval 18 --output evaluation/results/development.json
-python -m assistant.benchmark --split heldout --limit 10 --repeats 2 --interval 18 --output evaluation/results/heldout.json
+python -m assistant.benchmark --split triage --case-ids H08,R13 --repeats 2 --request-seconds 180 --progress --output evaluation/results/targeted.json
+python -m assistant.benchmark --split development --limit 50 --repeats 1 --requests-per-minute 30 --tokens-per-minute 8000 --request-seconds 180 --output evaluation/results/development.json
 ```
 
 Choose an identifier returned by the provider's model-list API with `--model`.
@@ -73,7 +78,9 @@ approaches use the same provider model, temperature 0, non-thinking mode,
 1500-token output cap, business contract and metadata selector. The workflow has
 plans, tools, result-backed answers and bounded repairs. The simpler baseline
 makes one JSON SQL-generation call with no repairs, followed by controlled SQL
-execution. Both share application preflight checks. Those checks are not model
+execution. Both share application preflight checks. The current baseline explicitly receives
+the no-CTE/comment execution policy and records a separate baseline prompt version;
+earlier measured protocols did not repeat that instruction. Those checks are not model
 accuracy. Baseline answer faithfulness is not applicable: it generates no answer.
 
 Results include every attempted case, provider failures, latency, model/version,
@@ -85,12 +92,20 @@ they are not a blind external benchmark and have regression tests. Do not tune
 against them and continue claiming independent held-out performance. Freeze a
 new independent split for subsequent model selection.
 
-Pacing shares a clock between bound tools and baseline calls and counterbalances
-approach order. It does not retry failed requests or remove quota failures.
-Adjust the interval to the actual account quota. A quota-constrained run is an
+Rolling request/token admission is shared between bound tools and baseline calls;
+approach order is counterbalanced. Waiting consumes each request deadline; the
+HTTP timeout is recalculated afterward. Token estimates are replaced by usage
+when reported. Configure RPM/TPM for the actual account; this sequential local
+scheduler cannot reserve shared-account traffic. An additional minimum interval
+is optional. There are no automatic request retries. Three consecutive provider
+failures stop the run and save partial evidence with unattempted counts. A quota-constrained run is an
 operational pilot, not a valid ranking of NL-to-SQL accuracy. Use **Benchmarks** in the app to inspect the bundled runs without a key.
 See the published
-[measured report](benchmark-report.md) for successes **and failures**.
+[measured report](benchmark-report.md) for successes **and failures**, and the
+[reliability follow-up](benchmark-reliability-status.md) for current fixes, recorded
+triage results and pending reruns. Optional `--synthetic-diagnostics path.json`
+captures raw SQL/plans only for benchmark-owned synthetic fixtures; keep that
+separate from general reports. The CLI reads GROQ_API_KEY from its environment.
 
 The 50 offline reference checks remain application regressions, not a live
 benchmark. This separation follows [LangChain's evaluation guidance](https://docs.langchain.com/langsmith/evaluation-types).
@@ -114,7 +129,7 @@ charged. This conservative accounting is not a model-tokenizer estimate or a
 billing guarantee. Trace usage completeness remains explicit.
 
 Provider errors are sanitized into rate-limit, authentication, model/request,
-timeout, unavailable and unknown categories. Exception text is not exported.
+connection, timeout, unavailable and unknown categories. Exception text is not exported.
 
 ```bash
 export ASSISTANT_TELEMETRY_PATH=.telemetry/requests.db

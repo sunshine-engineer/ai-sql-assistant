@@ -61,7 +61,8 @@ def evaluate(service, model=None, cases=None):
     for case in cases if cases is not None else load_cases():
         started = perf_counter()
         trace = None
-        query_passed = answer_passed = displayed_passed = None
+        query_passed = answer_passed = displayed_passed = model_answer_passed = None
+        answer_method = None
         try:
             if model is None:
                 if case['expected_outcome'] == 'answered':
@@ -78,7 +79,11 @@ def evaluate(service, model=None, cases=None):
                 passed = outcome == case['expected_outcome']
                 if case['expected_outcome'] == 'answered':
                     query_passed = same_results(report.result, case)
-                    answer_passed = report.answer_validation.get('model_verified', False)
+                    status = report.answer_validation.get('status')
+                    answer_method = report.answer_validation.get('method', status)
+                    model_answer_passed = report.answer_validation.get('model_verified', False) if status in {'verified','rejected'} else None
+                    answer_passed = (report.answer_validation.get('displayed_verified',False) if status == 'deterministic'
+                                     else report.answer_validation.get('model_verified',False))
                     displayed_passed = report.answer_validation.get('displayed_verified', False)
                     passed = passed and query_passed and answer_passed
             if passed:
@@ -101,6 +106,7 @@ def evaluate(service, model=None, cases=None):
                          'expected_outcome': case['expected_outcome'], 'outcome': outcome,
                          'passed': passed, 'error': error,
                          'query_passed': query_passed, 'answer_passed': answer_passed,
+                         'model_answer_passed':model_answer_passed,'answer_method':answer_method,
                          'displayed_answer_passed': displayed_passed,
                          'duration_ms': round((perf_counter()-started)*1000, 2), 'trace': trace})
     metrics = {}
@@ -108,7 +114,7 @@ def evaluate(service, model=None, cases=None):
         selected = [r for r in outcomes if r['expected_outcome'] == kind]
         metrics[kind] = {'passed': sum(r['passed'] for r in selected), 'total': len(selected)}
     quality = {}
-    for label, field in [('query_results', 'query_passed'), ('model_answer_faithfulness', 'answer_passed'),
+    for label, field in [('query_results', 'query_passed'), ('answer_faithfulness','answer_passed'), ('model_answer_faithfulness', 'model_answer_passed'),
                          ('displayed_answer_faithfulness', 'displayed_answer_passed')]:
         values = [row[field] for row in outcomes if row[field] is not None]
         quality[label] = {'passed': sum(values), 'total': len(values)}
@@ -121,7 +127,7 @@ def evaluate(service, model=None, cases=None):
             'model_calls': sum(len(t['model_calls']) for t in traces),
             'sql_repairs': sum(t['retries'] for t in traces),
             'scope': 'Synthetic SQLite retail fixture. Live mode separately checks query results and result-referenced answer facts; excludes SQL semantic proof and unrestricted prose grading.',
-            'evaluation_version': 'v2-answer-facts', 'quality_metrics': quality,
+            'evaluation_version': 'v3-canonical-answers', 'quality_metrics': quality,
             'metrics': metrics, 'categories': dict(Counter(r['category'] for r in outcomes)),
             'latency_ms': {'p50': median(latencies) if latencies else None,
                            'p95': latencies[max(0, math.ceil(len(latencies)*.95)-1)] if latencies else None},

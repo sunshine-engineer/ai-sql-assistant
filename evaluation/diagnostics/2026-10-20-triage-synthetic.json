@@ -1,0 +1,311 @@
+{
+  "scope": "Raw proposed plans and SQL for benchmark-owned synthetic fixtures only.",
+  "rows": [
+    {
+      "id": "R09",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT COALESCE(region, 'Unknown') AS region_label, SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts GROUP BY COALESCE(region, 'Unknown') ORDER BY region_label LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT COALESCE(region, 'Unknown') AS region_label, SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts GROUP BY COALESCE(region, 'Unknown') ORDER BY region_label",
+          "sql": "SELECT COALESCE(region, 'Unknown') AS region_label, SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts GROUP BY COALESCE(region, 'Unknown') ORDER BY region_label LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT COALESCE(region, 'Unknown') AS region_label, SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts GROUP BY COALESCE(region, 'Unknown') ORDER BY region_label ASC",
+      "attempts": []
+    },
+    {
+      "id": "R13",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT p.product_id, p.product_name FROM products p LEFT JOIN sales_facts sf ON p.product_id = sf.product_id WHERE sf.product_id IS NULL",
+      "attempts": []
+    },
+    {
+      "id": "R13",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT p.product_id, p.product_name, p.category, p.list_price_cents FROM products AS p WHERE NOT p.product_id IN (SELECT DISTINCT product_id FROM order_items) ORDER BY p.product_id LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT p.product_id, p.product_name, p.category, p.list_price_cents FROM products p WHERE p.product_id NOT IN (SELECT DISTINCT product_id FROM order_items) ORDER BY p.product_id",
+          "sql": "SELECT p.product_id, p.product_name, p.category, p.list_price_cents FROM products AS p WHERE NOT p.product_id IN (SELECT DISTINCT product_id FROM order_items) ORDER BY p.product_id LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "R28",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category",
+          "sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "R28",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category",
+      "attempts": []
+    },
+    {
+      "id": "R30",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "WITH monthly AS (SELECT month, SUM(net_revenue_cents) AS net FROM sales_facts WHERE month IN ('2026-03', '2026-04') GROUP BY month) SELECT ROUND((SUM(CASE WHEN month = '2026-04' THEN net ELSE 0 END) - SUM(CASE WHEN month = '2026-03' THEN net ELSE 0 END)) * 1.0 / NULLIF(SUM(CASE WHEN month = '2026-03' THEN net ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM monthly",
+      "attempts": []
+    },
+    {
+      "id": "R30",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT ROUND(CAST((SUM(CASE WHEN order_date >= '2026-04-01' AND order_date < '2026-05-01' THEN net_revenue_cents ELSE 0 END) - SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END)) * 1.0 AS REAL) / NULLIF(SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM sales_facts WHERE order_date >= '2026-03-01' AND order_date < '2026-05-01' LIMIT 201",
+      "attempts": [
+        {
+          "plan": {
+            "metric": "net_revenue_growth_ratio",
+            "dimensions": [],
+            "filters": {},
+            "date_range": [
+              "2026-04-01",
+              "2026-05-01"
+            ],
+            "grain": "item"
+          },
+          "proposed_sql": "SELECT ROUND(CAST((SUM(CASE WHEN order_date >= '2026-04-01' AND order_date < '2026-05-01' THEN net_revenue_cents ELSE 0 END) - SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END)) * 1.0 AS REAL) / NULLIF(SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM sales_facts WHERE order_date >= '2026-03-01' AND order_date < '2026-05-01'",
+          "sql": "SELECT ROUND(CAST((SUM(CASE WHEN order_date >= '2026-04-01' AND order_date < '2026-05-01' THEN net_revenue_cents ELSE 0 END) - SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END)) * 1.0 AS REAL) / NULLIF(SUM(CASE WHEN order_date >= '2026-03-01' AND order_date < '2026-04-01' THEN net_revenue_cents ELSE 0 END), 0), 4) AS net_revenue_growth_ratio FROM sales_facts WHERE order_date >= '2026-03-01' AND order_date < '2026-05-01' LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "H04",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT CAST(SUM(refund_cents) * 1.0 AS REAL) / NULLIF(SUM(gross_sales_cents), 0) AS refund_rate FROM sales_facts LIMIT 201",
+      "attempts": [
+        {
+          "plan": {
+            "metric": "refund_rate",
+            "dimensions": [],
+            "filters": {},
+            "date_range": null,
+            "grain": "item"
+          },
+          "proposed_sql": "SELECT CAST(SUM(refund_cents) * 1.0 AS REAL) / NULLIF(SUM(gross_sales_cents), 0) AS refund_rate FROM sales_facts",
+          "sql": "SELECT CAST(SUM(refund_cents) * 1.0 AS REAL) / NULLIF(SUM(gross_sales_cents), 0) AS refund_rate FROM sales_facts LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "H04",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT SUM(sales_facts.refund_cents) * 1.0 / NULLIF(SUM(sales_facts.gross_sales_cents), 0) AS refund_to_gross_ratio FROM sales_facts",
+      "attempts": []
+    },
+    {
+      "id": "H05",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT SUM(net_revenue_cents) FROM sales_facts WHERE region = 'South' AND month = '2026-03'",
+      "attempts": []
+    },
+    {
+      "id": "H05",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts WHERE (region = 'South' AND order_date >= '2026-03-01') AND order_date < '2026-04-01' LIMIT 201",
+      "attempts": [
+        {
+          "plan": {
+            "metric": "net_revenue_cents",
+            "dimensions": [],
+            "filters": {
+              "region": "South"
+            },
+            "date_range": [
+              "2026-03-01",
+              "2026-04-01"
+            ],
+            "grain": "item"
+          },
+          "proposed_sql": "SELECT SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts WHERE (region = 'South' AND order_date >= '2026-03-01') AND order_date < '2026-04-01'",
+          "sql": "SELECT SUM(net_revenue_cents) AS net_revenue_cents FROM sales_facts WHERE (region = 'South' AND order_date >= '2026-03-01') AND order_date < '2026-04-01' LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "H07",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category",
+          "sql": "SELECT category, SUM(refund_cents) AS refund_cents FROM sales_facts GROUP BY category ORDER BY category LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "H07",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H08",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H08",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R09",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R09",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R13",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R13",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R28",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R28",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R30",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R30",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H04",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H04",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H05",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H05",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H07",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H07",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H08",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "H08",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    }
+  ]
+}
