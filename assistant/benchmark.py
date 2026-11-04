@@ -18,6 +18,7 @@ from .tracing import PROMPT_VERSION, model_identifier, Trace
 from .validation import UnsafeSQL
 
 HELDOUT = Path(__file__).resolve().parent.parent / 'evaluation/heldout_v1.json'
+PROSPECTIVE = Path(__file__).resolve().parent.parent / 'evaluation/prospective_v1.json'
 TRIAGE_IDS = ('R09','R13','R28','R30','H04','H05','H07','H08')
 BASELINE_PROMPT_VERSION = 'one-shot-v2-no-cte-policy'
 PROVIDER_FAILURES = {'rate_limit','authentication','model_or_request','provider_timeout',
@@ -26,8 +27,27 @@ PROVIDER_FAILURES = {'rate_limit','authentication','model_or_request','provider_
 PacedModel = ScheduledModel
 
 
-def suites():
-    return {'development':load_cases(), 'heldout':json.loads(HELDOUT.read_text())['cases']}
+def suites(include_prospective=False):
+    groups = {'development':load_cases(), 'heldout':json.loads(HELDOUT.read_text())['cases']}
+    if include_prospective:
+        groups['prospective'] = json.loads(PROSPECTIVE.read_text())['cases']
+    return groups
+
+
+def case_completion(rows, cases, repeats):
+    """A consistent case has exactly one passing record for every repeat."""
+    counts = dict(consistent_cases=0, completed_cases=0, incomplete_cases=0, unattempted_cases=0)
+    expected = list(range(1, repeats+1))
+    for case in cases:
+        recorded = [row for row in rows if row['id']==case['id']]
+        if not recorded:
+            counts['unattempted_cases'] += 1
+        elif sorted(row['repeat'] for row in recorded) != expected:
+            counts['incomplete_cases'] += 1
+        else:
+            counts['completed_cases'] += 1
+            counts['consistent_cases'] += all(row['passed'] for row in recorded)
+    return counts
 
 
 def execution_error(exc, reference=False):
@@ -201,27 +221,29 @@ def benchmark(model, services, cases, repeats=2, split='heldout', diagnostics=No
             'answer_verified':sum(r['answer_verified'] for r in answers),'answer_total':len(answers),
             'displayed_answer_verified':sum(r['displayed_answer_verified'] for r in displayed),'displayed_answer_total':len(displayed),
             'canonical_answers':sum(r.get('answer_method')=='canonical_plan' for r in selected),
-            'consistent_cases':sum(all(r['passed'] for r in selected if r['id']==case['id']) for case in cases),'cases':len(cases)}
+            **case_completion(selected,cases,repeats),'cases':len(cases)}
     scheduler = getattr(model,'scheduler',None)
-    return {'mode':'live_paired_benchmark','benchmark_version':'v3-baseline-policy-parity',
+    return {'mode':'live_paired_benchmark','benchmark_version':'v4-complete-repetitions',
         'model':model_identifier(model),'prompt_version':PROMPT_VERSION,'source_sha256':source.hexdigest(),
         'baseline_prompt_version':BASELINE_PROMPT_VERSION,
         'model_parameters':{'temperature':0,'max_output_tokens':1500,'reasoning_effort':'none'},
         'timestamp':datetime.now(timezone.utc).isoformat(),'split':split,'repeats':repeats,'request_seconds':request_seconds,
         'suite_sha256':hashlib.sha256(json.dumps(cases,sort_keys=True).encode()).hexdigest(),
-        'case_contract_version':json.loads(CASE_FILE.read_text())['case_contract_version']+'/'+json.loads(HELDOUT.read_text())['version'],
+        'case_contract_version':json.loads(PROSPECTIVE.read_text())['version'] if split=='prospective' else json.loads(CASE_FILE.read_text())['case_contract_version']+'/'+json.loads(HELDOUT.read_text())['version'],
+        'evaluation_role':'prospective_holdout_same_author' if split=='prospective' else 'regression',
         'instance_version':'retail-instances-v1',
         'instances':list(services),'scheduling':scheduler.summary() if isinstance(scheduler,QuotaScheduler) else None,
         'completion':{'planned_attempts':len(cases)*repeats*2,'recorded_attempts':len(rows),
                       'not_attempted':len(cases)*repeats*2-len(rows),
                       'stop_reason':'consecutive_provider_failures' if stopped else None},
-        'scope':'Same SQL across synthetic instances. Previously exposed questions are regression cases, not independent held-out evidence. Canonical answers are deterministic; model-answer scores exclude them. Baseline has no answer stage.',
+        'scope':('Prospective prompts frozen before this run, authored by the implementation agent: not independently authored or external. ' if split=='prospective' else 'Previously exposed questions are regression cases, not independent held-out evidence. ')+
+                'Same SQL across synthetic instances. Canonical answers are deterministic; model-answer scores exclude them. Baseline has no answer stage.',
         'summary':summary,'rows':rows}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--split',choices=['development','heldout','triage'],default='triage')
+    parser.add_argument('--split',choices=['development','heldout','triage','prospective'],default='triage')
     parser.add_argument('--case-ids',help='Comma-separated IDs; select explicitly without editing suites.')
     parser.add_argument('--repeats',type=int,default=2)
     parser.add_argument('--limit',type=int,default=50)
@@ -236,7 +258,7 @@ def main():
     args = parser.parse_args()
     if not 1<=args.repeats<=5 or not 1<=args.limit<=50 or not 0<args.request_seconds<=300:
         parser.error('repeats 1..5, limit 1..50, request-seconds >0 and <=300')
-    all_cases = suites()
+    all_cases = suites(include_prospective=args.split=='prospective')
     pool = [c for cases in all_cases.values() for c in cases] if args.split=='triage' else all_cases[args.split]
     ids = args.case_ids.split(',') if args.case_ids else TRIAGE_IDS if args.split=='triage' else None
     if ids and (len(set(ids))!=len(ids) or not set(ids)<=set(c['id'] for c in pool)):

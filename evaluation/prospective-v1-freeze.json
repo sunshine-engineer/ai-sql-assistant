@@ -1,0 +1,30 @@
+{
+  "version": "prospective-retail-v1",
+  "frozen_at": "2026-10-21T12:02:05.098370+00:00",
+  "suite_file": "evaluation/prospective_v1.json",
+  "suite_sha256": "ba14a0790f54f5606d614c80344a61644aab64bbd3660d72cc45089563c3d456",
+  "assistant_source_sha256": "b00f18fa45ea807ee25aba3a1627ddb335277a03404e258bf6759a3830a3bde3",
+  "authorship": "same implementation agent; prospective, not independently authored or external",
+  "protocol": {
+    "selection": "All 8 cases; 6 SQL tasks and 2 deterministic application controls",
+    "model": "qwen/qwen3.8-27b",
+    "temperature": 0,
+    "max_output_tokens": 1500,
+    "repeats": 1,
+    "request_seconds": 240,
+    "requests_per_minute": 2,
+    "tokens_per_minute": 8000,
+    "minimum_interval_seconds": 35,
+    "approaches": [
+      "workflow",
+      "one_shot"
+    ],
+    "data_instances": [
+      "base",
+      "skewed",
+      "zero_sales"
+    ],
+    "failure_policy": "retain all failures; stop after 3 consecutive provider failures; do not automatically restart",
+    "no_tuning": "Retire v1 from holdout status if used to change prompts or implementation; publish later fixes as regressions."
+  }
+}

@@ -1,7 +1,33 @@
 """Conservative checks for explicit metric, grouping, region and calendar-month intent."""
 import re
 from .dates import MONTH, MONTH_NUMBERS, requested_dates
-from .demo import next_month, previous_month
+from .demo import next_month
+
+
+def unsupported_plan_filters(question):
+    """Recognize shapes the equality-only canonical plan cannot represent.
+
+    This intentionally routes to reviewed SQL instead of extracting one member
+    of a list, discarding a negation or pretending to understand general filters.
+    """
+    q = question.lower()
+    regions = set(re.findall(r'\b(north|south|east|west)\b', q))
+    categories = set(re.findall(r'\b(hardware|software|accessories)\b', q))
+    if len(regions) > 1 or len(categories) > 1:
+        return 'multiple_values'
+    if (regions or categories or re.search(r'\b(region|category|status)\b',q)) and re.search(r'\bnot\b',q):
+        return 'exclusion'
+    if re.search(r'\b(or|either|neither|nor)\b', q):
+        return 'disjunction'
+    if re.search(r'\b(exclud\w*|except|other than|not in|not equal|not from|not for|outside)\b|!=|<>', q):
+        return 'exclusion'
+    if re.search(r'\b(?:not|without)\s+(?:the\s+)?(?:north|south|east|west|hardware|software|accessories)\b', q):
+        return 'exclusion'
+    if re.search(r'\b(where|having|above|below|over|under|between|more than|less than|at least|at most)\b|[<>]', q):
+        return 'conditional_filter'
+    if re.search(r'\b(cancelled|canceled|pending|status)\b|\bwith\s+(?:no|quantity|amount|orders?)\b|\bcustomer\s+(?:id\s*)?\d+\b', q):
+        return 'unsupported_filter'
+    return None
 
 
 class PlanIntentError(ValueError):
@@ -34,7 +60,7 @@ def explicit_constraints(question):
                     groups.append(name)
         if groups or not re.search(r'\b(?:by|per|each|breakdown|break.down|across|group)\b', q):
             expected['dimensions'] = groups
-    regions = re.findall(r'\b(?:for|in|from)\s+(?:the\s+)?(north|south|east|west)(?:\s+region)?\b', q)
+    regions = re.findall(r'\b(north|south|east|west)\b', q)
     if len(set(regions)) == 1:
         expected['region'] = regions[0].title()
     categories = re.findall(r'\b(hardware|software|accessories)\b', q)
@@ -61,6 +87,9 @@ def explicit_constraints(question):
 
 
 def validate_plan_intent(plan, question):
+    reason = unsupported_plan_filters(question)
+    if reason:
+        raise PlanIntentError({'route': 'Use query_database and preserve every requested filter, or ask clarification; canonical equality filters cannot represent '+reason+'.'})
     expected = explicit_constraints(question)
     q = question.lower()
     if re.search(r'products?.*(?:never|not).*order',q):
@@ -83,4 +112,5 @@ def validate_plan_intent(plan, question):
 def requires_refund_plan(question):
     q = question.lower()
     return (explicit_constraints(question).get('metric') == 'refund_rate' and
+            unsupported_plan_filters(question) is None and
             not re.search(r'\b(?:where|having|top|over|above|below|excluding|between|customers|status)\b', q))
