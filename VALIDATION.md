@@ -1,6 +1,18 @@
+<!-- File: VALIDATION.md | Purpose: Historical initial modularization validation record. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Fix validation
 
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](docs/HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
+
 Outline: scope, executed checks, issue coverage, remaining integration checks.
+
+**2026-10-21 follow-up:** real PostgreSQL/MySQL integration is now verified; all
+351 tests passed with both database endpoints enabled. See the
+[current reliability record](docs/benchmark-reliability-status.md) for live-model
+confirmations and Docker verification. The historical results below are retained.
 
 ## Scope
 

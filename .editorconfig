@@ -1,0 +1,25 @@
+# File: .editorconfig
+# Purpose: Keep text encoding, indentation, and whitespace consistent across editors.
+# Maintainer: sunshine-engineer
+# Modified: 2026-10-23
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{yaml,yml,json,toml}]
+indent_size = 2
+
+[*.md]
+# Preserve intentional Markdown hard breaks.
+trim_trailing_whitespace = false
+
+[evaluation/**.json]
+# Frozen evidence is byte-preserved; do not reformat on save.
+trim_trailing_whitespace = false
+insert_final_newline = false

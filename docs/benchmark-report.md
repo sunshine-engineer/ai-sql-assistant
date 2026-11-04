@@ -1,4 +1,15 @@
+<!-- File: docs/benchmark-report.md | Purpose: Benchmark report and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Measured live benchmark — 2026-10-20
+
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
+
+For subsequent fixes, preserved triage results and completed live checks, see the
+[reliability follow-up](benchmark-reliability-status.md). The results below are
+historical and have not been rescored.
 
 ## What was measured
 

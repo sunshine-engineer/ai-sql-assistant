@@ -1,0 +1,85 @@
+{
+  "scope": "Raw proposed plans and SQL for benchmark-owned synthetic fixtures only.",
+  "rows": [
+    {
+      "id": "H08",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT COUNT(*) FROM products WHERE NOT product_id IN (SELECT product_id FROM order_items) LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT COUNT(*) FROM products WHERE product_id NOT IN (SELECT product_id FROM order_items)",
+          "sql": "SELECT COUNT(*) FROM products WHERE NOT product_id IN (SELECT product_id FROM order_items) LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "H08",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT COUNT(*) AS product_count FROM products p WHERE NOT EXISTS (SELECT 1 FROM order_items oi WHERE oi.product_id = p.product_id)",
+      "attempts": []
+    },
+    {
+      "id": "R13",
+      "approach": "one_shot",
+      "repeat": 1,
+      "sql": "SELECT p.product_name FROM products p LEFT JOIN sales_facts sf ON p.product_id = sf.product_id WHERE sf.item_id IS NULL ORDER BY p.product_name",
+      "attempts": []
+    },
+    {
+      "id": "R13",
+      "approach": "workflow",
+      "repeat": 1,
+      "sql": "SELECT p.product_name FROM products AS p LEFT JOIN order_items AS oi ON p.product_id = oi.product_id WHERE oi.item_id IS NULL ORDER BY p.product_name LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT p.product_name FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id WHERE oi.item_id IS NULL ORDER BY p.product_name",
+          "sql": "SELECT p.product_name FROM products AS p LEFT JOIN order_items AS oi ON p.product_id = oi.product_id WHERE oi.item_id IS NULL ORDER BY p.product_name LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "H08",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": "SELECT COUNT(*) AS product_count FROM products p WHERE NOT EXISTS (SELECT 1 FROM order_items oi WHERE oi.product_id = p.product_id)",
+      "attempts": []
+    },
+    {
+      "id": "H08",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": "SELECT COUNT(*) FROM products WHERE NOT product_id IN (SELECT product_id FROM order_items) LIMIT 201",
+      "attempts": [
+        {
+          "plan": null,
+          "proposed_sql": "SELECT COUNT(*) FROM products WHERE product_id NOT IN (SELECT product_id FROM order_items)",
+          "sql": "SELECT COUNT(*) FROM products WHERE NOT product_id IN (SELECT product_id FROM order_items) LIMIT 201",
+          "validation": "passed",
+          "execution": "succeeded"
+        }
+      ]
+    },
+    {
+      "id": "R13",
+      "approach": "workflow",
+      "repeat": 2,
+      "sql": null,
+      "attempts": []
+    },
+    {
+      "id": "R13",
+      "approach": "one_shot",
+      "repeat": 2,
+      "sql": "SELECT p.product_name FROM products p LEFT JOIN sales_facts sf ON p.product_id = sf.product_id WHERE sf.item_id IS NULL ORDER BY p.product_name",
+      "attempts": []
+    }
+  ]
+}
