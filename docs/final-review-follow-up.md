@@ -1,4 +1,11 @@
+<!-- File: docs/final-review-follow-up.md | Purpose: Final review follow up and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Final portfolio review follow-up
+
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
 
 Outline: correctness fixes, reporting, presentation, evaluation and validation.
 

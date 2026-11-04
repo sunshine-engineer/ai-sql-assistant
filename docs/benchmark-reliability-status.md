@@ -1,6 +1,14 @@
+<!-- File: docs/benchmark-reliability-status.md | Purpose: Benchmark reliability status and supporting evidence. | Maintainer: sunshine-engineer | Modified: 2026-10-23 -->
+
 # Benchmark reliability follow-up — 2026-10-21
 
-**Latest status (2026-10-21): all pending verification is complete.**
+> **Historical validation snapshot / investigation log.** Counts, pending items and
+> environment limits below describe the recorded milestone, not today's deployment
+> status. Use the [current handover guide](HANDOVER.md) for setup, current evidence
+> and remaining acceptance steps. Historical report artifacts are unchanged.
+
+**Reliability milestone (2026-10-21): its pending verification was completed.**
+This is not acceptance of final `main`, PR merges or hosted production deployment.
 
 | Check | Final evidence |
 | --- | --- |
